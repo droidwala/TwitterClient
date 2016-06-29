@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TwitterClient</string>
+    <string name="login_failure_msg">Failed to login</string>
 </resources>
