@@ -7,4 +7,13 @@ public class Constants {
     public static final String USER_ID = "USER_ID";
     public static final String USER_NAME = "USER_NAME";
     public static final int TWEET_COUNT = 15;
+
+    public static final String BPROFILE_IMG_URL = "image_url";
+    public static final String BUSERNAME = "username";
+    public static final String BTWITTERNAME = "twitter_name";
+    public static final String BTWEET = "tweet";
+    public static final String BRETWEETS = "retweets_count";
+    public static final String BLIKES = "likes_count";
+    public static final String BFAVORITED = "favorited";
+    public static final String BRETWEETED = "retweeted";
 }

@@ -9,7 +9,7 @@
     android:background="@color/colorPrimary"
     app:theme="@style/Theme.AppCompat.Light.DarkActionBar"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    android:elevation="4dp"
+    android:elevation="@dimen/toolbar_elevation"
     android:layout_gravity="start|top">
 
     <LinearLayout

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        layout= "@layout/toolbar_with_title"
+        android:id="@+id/toolbar"/>
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/detail_tweet_profile_img"
+        android:layout_width="@dimen/timeline_row_image_size"
+        android:layout_height="@dimen/timeline_row_image_size"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginStart="@dimen/detail_tweet_image_margin_left"
+        android:layout_marginLeft="@dimen/detail_tweet_image_margin_left"
+        android:layout_marginRight="@dimen/detail_tweet_image_margin_right"
+        android:layout_marginEnd="@dimen/detail_tweet_image_margin_right"
+        android:layout_marginTop="@dimen/detail_tweet_image_margin_top"
+        app:riv_corner_radius="@dimen/detail_tweet_image_corner_radius"
+        tools:src="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:id="@+id/detail_tweet_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/detail_tweet_profile_img"
+        android:layout_toEndOf="@+id/detail_tweet_profile_img"
+        android:layout_alignTop="@+id/detail_tweet_profile_img"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/detail_tweet_user_name_text_size"
+        tools:text="Punit Dama"/>
+    <TextView
+        android:id="@+id/detail_tweet_twitter_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_tweet_username"
+        android:layout_alignLeft="@+id/detail_tweet_username"
+        android:layout_alignStart="@+id/detail_tweet_username"
+        android:layout_marginTop="@dimen/detail_tweet_twitter_name_margin_top"
+        tools:text="punit07m"/>
+
+    <TextView
+        android:id="@+id/detail_tweet_complete_tweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_tweet_twitter_name"
+        android:layout_marginTop="@dimen/detail_tweet_text_margin_top"
+        android:layout_marginLeft="@dimen/detail_tweet_text_margin_left_right"
+        android:layout_marginRight="@dimen/detail_tweet_text_margin_left_right"
+        style="@style/TweetTextStyle"
+        tools:text="This is big tweet to check how does it look.Hope everything looks fine!\nHow are things over there? "/>
+
+    <TextView
+        android:id="@+id/detail_tweet_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/detail_tweet_complete_tweet"
+        android:layout_alignLeft="@+id/detail_tweet_complete_tweet"
+        tools:text="12:16 AM :30 Jun 16"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/tweets_likes_layout"
+        android:layout_below="@+id/detail_tweet_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/detail_tweet_timestamp_margin_top"
+        android:background="@drawable/top_bottom_bg"
+        android:padding="@dimen/detail_tweet_likes_retweets_bg_padding">
+        <TextView
+            android:id="@+id/retweets_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="29 RETWEETS"/>
+        <TextView
+            android:id="@+id/likes_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="89 LIKES"
+            android:layout_marginLeft="@dimen/detail_tweet_likes_count_margin_left"
+            android:layout_marginStart="@dimen/detail_tweet_likes_count_margin_left"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/tweets_likes_layout"
+        android:layout_margin="8dp">
+        <ImageView
+            android:id="@+id/reply_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/action_reply"
+            android:layout_weight="1"
+            android:clickable="true" />
+        <com.example.punit.twitterclient.util.CheckableImageView
+            android:id="@+id/retweet_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/action_retweet"
+            android:clickable="true"
+            android:layout_weight="1"
+            android:onClick="retweet"/>
+        <com.example.punit.twitterclient.util.CheckableImageView
+            android:id="@+id/like_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/action_like"
+            android:clickable="true"
+            android:layout_weight="1"
+            android:onClick="like"/>
+    </LinearLayout>
+
+</RelativeLayout>

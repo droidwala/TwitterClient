@@ -3,10 +3,11 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="progress_bar_width_height">48dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="toolbar_title_text_size">20sp</dimen>
 
     <!--Toolbar dimens -->
     <dimen name="toolbar_bottom_margin">5dp</dimen>
-    <dimen name="toolbar_title_text_size">20sp</dimen>
     <dimen name="toolbar_title_margin_left_with_image">8dp</dimen>
 
     <!--Timeline row dimens -->
@@ -19,4 +20,17 @@
     <dimen name="timeline_row_tweet_padding_top">4dp</dimen>
     <dimen name="timeline_row_tweet_padding_bottom">10dp</dimen>
     <dimen name="row_item_height_progress_bar">100dp</dimen>
+
+    <!--Detail Tweet dimens -->
+    <dimen name="detail_tweet_image_margin_left">8dp</dimen>
+    <dimen name="detail_tweet_image_margin_right">16dp</dimen>
+    <dimen name="detail_tweet_image_margin_top">24dp</dimen>
+    <dimen name="detail_tweet_image_corner_radius">4dp</dimen>
+    <dimen name="detail_tweet_user_name_text_size">16sp</dimen>
+    <dimen name="detail_tweet_twitter_name_margin_top">4dp</dimen>
+    <dimen name="detail_tweet_text_margin_left_right">8dp</dimen>
+    <dimen name="detail_tweet_text_margin_top">16dp</dimen>
+    <dimen name="detail_tweet_timestamp_margin_top">8dp</dimen>
+    <dimen name="detail_tweet_likes_count_margin_left">8dp</dimen>
+    <dimen name="detail_tweet_likes_retweets_bg_padding">4dp</dimen>
 </resources>

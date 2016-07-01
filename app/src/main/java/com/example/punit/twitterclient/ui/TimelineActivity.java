@@ -1,5 +1,6 @@
 package com.example.punit.twitterclient.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -167,5 +168,17 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
     @Override
     public void itemClicked(View view, int position) {
         Log.d(TAG, "itemClicked: " + String.valueOf(position));
+        Intent intent = new Intent(TimelineActivity.this,DetailTweetActivity.class);
+        Bundle b = new Bundle();
+        b.putString(Constants.BPROFILE_IMG_URL,tweets.get(position).user.profileImageUrl);
+        b.putString(Constants.BUSERNAME,tweets.get(position).user.name);
+        b.putString(Constants.BTWITTERNAME,tweets.get(position).user.screenName);
+        b.putString(Constants.BTWEET,tweets.get(position).text);
+        b.putInt(Constants.BRETWEETS,tweets.get(position).retweetCount);
+        b.putInt(Constants.BLIKES,tweets.get(position).favoriteCount);
+        b.putBoolean(Constants.BRETWEETED,tweets.get(position).retweeted);
+        b.putBoolean(Constants.BFAVORITED,tweets.get(position).favorited);
+        intent.putExtras(b);
+        startActivity(intent);
     }
 }
