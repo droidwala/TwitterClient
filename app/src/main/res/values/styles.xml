@@ -12,4 +12,12 @@
         <item name="colorControlNormal">@color/colorPrimaryDark</item>
     </style>
 
+    <style name="TweetTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:lineSpacingExtra">2sp</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textColorLink">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>

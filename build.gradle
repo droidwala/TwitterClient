@@ -27,6 +27,8 @@ ext{
     butterKnifeVersion = '8.0.1'
     jUnitVersion = '4.12'
     daggerVersion = '2.0.2'
+    roundedImageVersion = '2.2.1'
+    picassoVersion = '2.5.2'
 
 }
 
