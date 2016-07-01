@@ -15,8 +15,8 @@ android {
     }
     buildTypes {
         debug{
-            buildConfigField "String","KEY","\"\""
-            buildConfigField "String","SECRET","\"\""
+            buildConfigField "String","KEY","\"mFSpPqyUlHFvmwGMbfmdPkv7p\""
+            buildConfigField "String","SECRET","\"ePKlNzku7qvcEiiEJCXJJIyKvBifcHn4a3SQWpfRovq0i5D8VY\""
         }
         release {
             minifyEnabled false
@@ -37,6 +37,9 @@ dependencies {
     compile "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
     apt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
     provided "javax.annotation:jsr250-api:1.0"
+
+    compile "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
+    compile "com.makeramen:roundedimageview:$rootProject.ext.roundedImageVersion"
 
     compile('com.twitter.sdk.android:twitter:1.14.0@aar') {
         transitive = true;

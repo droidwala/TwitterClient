@@ -4,4 +4,5 @@
 
     <!--Timeline Activity -->
     <string name="timeline_title">Home</string>
+    <string name="no_tweets_fetched">No tweets fetched!</string>
 </resources>

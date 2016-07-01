@@ -9,6 +9,14 @@
     <dimen name="toolbar_title_text_size">20sp</dimen>
     <dimen name="toolbar_title_margin_left_with_image">8dp</dimen>
 
-    <!--Timeline dimens -->
-
+    <!--Timeline row dimens -->
+    <dimen name="timeline_row_padding">8dp</dimen>
+    <dimen name="timeline_row_image_size">54dp</dimen>
+    <dimen name="timeline_row_image_margin_left">8dp</dimen>
+    <dimen name="timeline_row_image_corner_radius">4dp</dimen>
+    <dimen name="timeline_row_username_margin_left">8dp</dimen>
+    <dimen name="timeline_row_username_text_size">16sp</dimen>
+    <dimen name="timeline_row_tweet_padding_top">4dp</dimen>
+    <dimen name="timeline_row_tweet_padding_bottom">10dp</dimen>
+    <dimen name="row_item_height_progress_bar">100dp</dimen>
 </resources>

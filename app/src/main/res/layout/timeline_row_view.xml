@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/timeline_row_padding"
+    android:background="?attr/selectableItemBackground">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/user_profile_img_timeline_row"
+        android:layout_width="@dimen/timeline_row_image_size"
+        android:layout_height="@dimen/timeline_row_image_size"
+        android:layout_marginLeft="@dimen/timeline_row_image_margin_left"
+        android:layout_marginStart="@dimen/timeline_row_image_margin_left"
+        app:riv_corner_radius="@dimen/timeline_row_image_corner_radius"
+        android:layout_alignTop="@+id/username_timeline_row"/>
+    <TextView
+        android:id="@+id/username_timeline_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/user_profile_img_timeline_row"
+        android:layout_toEndOf="@+id/user_profile_img_timeline_row"
+        android:layout_marginLeft="@dimen/timeline_row_username_margin_left"
+        android:layout_marginStart="@dimen/timeline_row_username_margin_left"
+        android:gravity="top"
+        android:textSize="@dimen/timeline_row_username_text_size"
+        android:textColor="@color/colorBlack"
+        android:ellipsize="end"
+        tools:text="Punit Dama"/>
+
+    <TextView
+        android:id="@+id/twitter_name_timeline_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/username_timeline_row"
+        android:layout_toEndOf="@+id/username_timeline_row"
+        tools:text="punit07m"
+        android:layout_marginLeft="@dimen/timeline_row_username_margin_left"
+        android:layout_marginStart="@dimen/timeline_row_username_margin_left"
+        android:layout_alignBottom="@+id/username_timeline_row"/>
+    <TextView
+        android:id="@+id/tweet_timeline_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username_timeline_row"
+        android:layout_alignLeft="@+id/username_timeline_row"
+        android:layout_alignStart="@+id/username_timeline_row"
+        android:paddingTop="@dimen/timeline_row_tweet_padding_top"
+        android:paddingBottom="@dimen/timeline_row_tweet_padding_bottom"
+        style="@style/TweetTextStyle"
+        android:clickable="true"
+        tools:text="LOL!ENGLAND!"/>
+
+</RelativeLayout>
