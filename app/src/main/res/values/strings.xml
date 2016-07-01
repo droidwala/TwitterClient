@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">TwitterClient</string>
     <string name="login_failure_msg">Failed to login</string>
+
+    <!--Timeline Activity -->
+    <string name="timeline_title">Home</string>
 </resources>

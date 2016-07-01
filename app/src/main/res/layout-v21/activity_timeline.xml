@@ -7,17 +7,11 @@
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar_with_image_and_title" />
-    <View
-        android:id="@+id/toolbar_shadow"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider_color"
-        android:layout_below="@+id/toolbar"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/timeline_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_shadow"/>
+        android:layout_below="@+id/toolbar"/>
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/progress_bar_width_height"
