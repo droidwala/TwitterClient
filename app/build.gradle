@@ -32,6 +32,11 @@ dependencies {
 
     compile "com.jakewharton:butterknife:$rootProject.ext.butterKnifeVersion"
     apt "com.jakewharton:butterknife-compiler:$rootProject.ext.butterKnifeVersion"
+
+    compile "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
+    apt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
+    provided "javax.annotation:jsr250-api:1.0"
+
     compile('com.twitter.sdk.android:twitter:1.14.0@aar') {
         transitive = true;
     }

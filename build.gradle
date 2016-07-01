@@ -26,6 +26,8 @@ ext{
     supportLibVersion = '23.4.0'
     butterKnifeVersion = '8.0.1'
     jUnitVersion = '4.12'
+    daggerVersion = '2.0.2'
+
 }
 
 
