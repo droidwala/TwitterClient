@@ -19,6 +19,11 @@ public class Constants {
     public static final String BFAVORITED = "favorited";
     public static final String BRETWEETED = "retweeted";
 
+    public static final int FAV_CHANGED_ID = 10;
+    public static final int RT_CHANGED_ID = 20;
+    public static final int BOTH_CHANGED_ID = 30;
+    public static final String CHANGE_ID = "change_id";
     public static final String FAV_STATUS = "fav_status";
+    public static final String RT_STATUS = "rt_status";
     public static final String POSITION = "position";
 }

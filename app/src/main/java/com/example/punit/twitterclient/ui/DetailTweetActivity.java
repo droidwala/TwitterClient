@@ -47,8 +47,11 @@ public class DetailTweetActivity extends AppCompatActivity{
     MyTwitterApiClient apiClient;
     long tweet_id;
 
+    int fav_count,retweet_count;
     boolean fav_status;
     boolean retweet_status;
+    boolean fav_status_changed = false;
+    boolean retweet_status_changed = false;
     int position;
 
     private static final String TAG = "DetailTweetActivity";
@@ -101,6 +104,7 @@ public class DetailTweetActivity extends AppCompatActivity{
 
 
     public void retweet(View view){
+        retweet_status_changed = true;
         if(!retweet.isChecked()){
             retweet.setChecked(true);
             apiClient.getCustomService().retweetTweet(tweet_id, new Callback<Response>() {
@@ -123,6 +127,7 @@ public class DetailTweetActivity extends AppCompatActivity{
     }
 
     public void like(View view){
+        fav_status_changed = true;
         if(like.isChecked()){
             //unfavorite tweet
             like.setChecked(false);
@@ -168,11 +173,9 @@ public class DetailTweetActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                Intent intent = new Intent();
-                intent.putExtra(Constants.FAV_STATUS,fav_status);
-                intent.putExtra(Constants.POSITION,position);
-                setResult(Activity.RESULT_OK,intent);
-                finish();
+                if(fav_status_changed || retweet_status_changed) {
+                    sendResult();
+                }
                 break;
             default:
                 break;
@@ -182,11 +185,34 @@ public class DetailTweetActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra(Constants.FAV_STATUS,fav_status);
-        intent.putExtra(Constants.POSITION,position);
-        setResult(Activity.RESULT_OK,intent);
+        if(fav_status_changed || retweet_status_changed) {
+            sendResult();
+        }
         super.onBackPressed();
 
     }
+
+    private void sendResult(){
+        Intent intent = new Intent();
+        intent.putExtra(Constants.POSITION,position);
+        if(fav_status_changed && retweet_status_changed){
+            Log.d(TAG, "sendResult: Both changed");
+            intent.putExtra(Constants.CHANGE_ID,Constants.BOTH_CHANGED_ID);
+            intent.putExtra(Constants.FAV_STATUS,fav_status);
+            intent.putExtra(Constants.RT_STATUS,retweet_status);
+        }
+        else if(fav_status_changed){
+            Log.d(TAG, "sendResult: Fav changed");
+            intent.putExtra(Constants.CHANGE_ID,Constants.FAV_CHANGED_ID);
+            intent.putExtra(Constants.FAV_STATUS,fav_status);
+        }
+        else{
+            Log.d(TAG, "sendResult: RT Changed");
+            intent.putExtra(Constants.CHANGE_ID,Constants.RT_CHANGED_ID);
+            intent.putExtra(Constants.RT_STATUS,retweet_status);
+        }
+        setResult(Activity.RESULT_OK,intent);
+        finish();
+    }
+
 }

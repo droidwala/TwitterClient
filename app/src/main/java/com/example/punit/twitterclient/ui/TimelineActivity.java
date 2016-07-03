@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.adapter.TimelineAdapter;
+import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.util.ClickListener;
 import com.example.punit.twitterclient.util.Constants;
@@ -46,7 +47,7 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
 
     LinearLayoutManager linearLayoutManager;
     TimelineAdapter adapter;
-    ArrayList<Tweet> tweets;
+    ArrayList<Timeline> tweets;
 
     //variables used to load more tweets using pagination
     boolean isLoading = false;
@@ -87,14 +88,14 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
 
     private void fetchTweets(int count){
         progressBar.setVisibility(View.VISIBLE);
-        apiClient.getCustomService().showTimeline(count, new Callback<List<Tweet>>() {
+        apiClient.getCustomService().showTimeline(count, new Callback<List<Timeline>>() {
             @Override
-            public void success(Result<List<Tweet>> result) {
+            public void success(Result<List<Timeline>> result) {
                 progressBar.setVisibility(View.GONE);
                 isLoading = false;
                 tweets = new ArrayList<>(result.data);
                 if(tweets.size()>0){
-                    max_id = (tweets.get(tweets.size()-1).getId()) - 1L;
+                    max_id = (tweets.get(tweets.size()-1).id) - 1L;
                     adapter = new TimelineAdapter(TimelineActivity.this,tweets);
                     adapter.setClickListener(TimelineActivity.this);
                     timeline_rv.setAdapter(adapter);
@@ -116,13 +117,13 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
 
 
     private void fetchMoreTweets(int count,long id){
-        apiClient.getCustomService().showMoreTimeline(count,id, new Callback<List<Tweet>>() {
+        apiClient.getCustomService().showMoreTimeline(count,id, new Callback<List<Timeline>>() {
             @Override
-            public void success(Result<List<Tweet>> result) {
+            public void success(Result<List<Timeline>> result) {
                 adapter.removeLoading();
                 isLoading = false;
-                ArrayList<Tweet> tweets = new ArrayList<>(result.data);
-                max_id = (tweets.get(tweets.size()-1).getId()) - 1;
+                ArrayList<Timeline> tweets = new ArrayList<>(result.data);
+                max_id = (tweets.get(tweets.size()-1).id) - 1;
                 Log.d(TAG, "success: more items added " + String.valueOf(max_id));
                 adapter.addAll(tweets);
             }
@@ -190,18 +191,65 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQ_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                if(data.getBooleanExtra(Constants.FAV_STATUS,false)){
-                    int fav_position = data.getIntExtra(Constants.POSITION,-1);
-                    if(fav_position > 0){
-                        Log.d(TAG, "onActivityResult: called");
-                        //we need to use our own Tweet model object
-                        // because the one provided by twitter makes
-                        // all the fields final and we can't change them
+        Log.d(TAG, "onActivityResult: outside if condition");
+        if(requestCode == REQ_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Log.d(TAG, "onActivityResult: inside if condition");
+                int position = data.getIntExtra(Constants.POSITION, -1);
+                int change_id = data.getIntExtra(Constants.CHANGE_ID, -1);
+                boolean fav_status, rt_status;
+                if (position > 0) {
+                    Log.d(TAG, "onActivityResult: " + String.valueOf(position));
+                    switch (change_id) {
+                        case Constants.BOTH_CHANGED_ID:
+                            Log.d(TAG, "onActivityResult: Both changed" );
+                            fav_status = data.getBooleanExtra(Constants.FAV_STATUS, false);
+                            rt_status = data.getBooleanExtra(Constants.RT_STATUS, false);
+                            tweets.get(position).setfavorite(fav_status);
+                            tweets.get(position).setRetweet(rt_status);
+                            changeFavCounter(fav_status,position);
+                            changeRtCounter(rt_status,position);
+                            break;
+
+                        case Constants.FAV_CHANGED_ID:
+                            Log.d(TAG, "onActivityResult: Fav changed");
+                            fav_status = data.getBooleanExtra(Constants.FAV_STATUS, false);
+                            tweets.get(position).setfavorite(fav_status);
+                            changeFavCounter(fav_status,position);
+                            break;
+
+                        case Constants.RT_CHANGED_ID:
+                            Log.d(TAG, "onActivityResult: Rt changed");
+                            rt_status = data.getBooleanExtra(Constants.RT_STATUS,false);
+                            tweets.get(position).setRetweet(rt_status);
+                            changeRtCounter(rt_status,position);
+                            break;
+                        default:
+                            break;
                     }
+
                 }
             }
         }
     }
+
+    private void changeRtCounter(boolean rt_status,int position){
+        if(rt_status){
+            tweets.get(position).incrementRtcount();
+        }
+        else{
+            tweets.get(position).decrementRtCount();
+        }
+
+    }
+
+    private void changeFavCounter(boolean fav_status,int position){
+        if(fav_status){
+            tweets.get(position).incrementFavCount();
+        }
+        else{
+            tweets.get(position).decrementFavCount();
+        }
+    }
+
 }

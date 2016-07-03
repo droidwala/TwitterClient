@@ -11,10 +11,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.punit.twitterclient.R;
+import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.util.ClickListener;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.models.Tweet;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,7 +33,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final String TAG = "CustomTimelineAdapter";
 
     private Context context;
-    private ArrayList<Tweet> tweets;
+    private ArrayList<Timeline> tweets;
     static ClickListener listener;
     private boolean isLoadingFooterAdded = false;
 
@@ -40,7 +42,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * @param context
      * @param tweets
      */
-    public TimelineAdapter(Context context, ArrayList<Tweet> tweets){
+    public TimelineAdapter(Context context, ArrayList<Timeline> tweets){
         this.context = context;
         this.tweets = tweets;
     }
@@ -102,11 +104,11 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return (position == tweets.size() - 1 && isLoadingFooterAdded) ? LOADING : ITEM;
     }
 
-    public Tweet getItem(int position){
+    public Timeline getItem(int position){
         return tweets.get(position);
     }
 
-    private void add(Tweet tweet){
+    private void add(Timeline tweet){
         tweets.add(tweet);
     }
 
@@ -114,8 +116,8 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * Called from Timeline Activity when new set of Tweets are obtained from API and needs to be added.
      * @param tweets
      */
-    public void addAll(ArrayList<Tweet> tweets){
-        for(Tweet tweet:tweets){
+    public void addAll(ArrayList<Timeline> tweets){
+        for(Timeline tweet:tweets){
             add(tweet);
         }
     }
@@ -125,7 +127,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      */
     public void addLoading(){
         isLoadingFooterAdded = true;
-        add(null);
+        add(new Timeline());
     }
 
 
@@ -136,10 +138,11 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         isLoadingFooterAdded = false;
 
         int position = tweets.size() - 1;
-        Tweet tweet = getItem(position);
-        tweets.remove(tweet);
-        notifyItemRemoved(position);
-
+        Timeline tweet = getItem(position);
+        if(tweet!=null) {
+            tweets.remove(tweet);
+            notifyItemRemoved(position);
+        }
     }
 
     /**
