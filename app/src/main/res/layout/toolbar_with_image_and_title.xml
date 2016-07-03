@@ -18,8 +18,8 @@
         android:layout_height="match_parent">
         <ImageView
             android:id="@+id/logo_img"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/toolbar_title_image_width_height"
+            android:layout_height="@dimen/toolbar_title_image_width_height"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_title_logo_signup"/>
         <TextView

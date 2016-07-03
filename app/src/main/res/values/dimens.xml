@@ -8,7 +8,8 @@
 
     <!--Toolbar dimens -->
     <dimen name="toolbar_bottom_margin">5dp</dimen>
-    <dimen name="toolbar_title_margin_left_with_image">8dp</dimen>
+    <dimen name="toolbar_title_margin_left_with_image">16dp</dimen>
+    <dimen name="toolbar_title_image_width_height">25dp</dimen>
 
     <!--Timeline row dimens -->
     <dimen name="timeline_row_padding">8dp</dimen>

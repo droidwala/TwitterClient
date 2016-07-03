@@ -42,11 +42,13 @@ public class DetailTweetActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         page_title = (TextView) toolbar.findViewById(R.id.page_title);
-        page_title.setText(getString(R.string.detail_tweet_title));
+        setSupportActionBar(toolbar);
         if(getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+        page_title.setText(getString(R.string.detail_tweet_title));
 
         Bundle b = getIntent().getExtras();
         Picasso.with(this)

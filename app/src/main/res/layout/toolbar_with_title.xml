@@ -15,7 +15,6 @@
         android:id="@+id/page_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         tools:ignore="MissingPrefix"
         android:textSize="@dimen/toolbar_title_text_size"
         android:textColor="@color/colorPrimaryDark"
