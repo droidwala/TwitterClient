@@ -1,8 +1,8 @@
 package com.example.punit.twitterclient.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,7 +57,7 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
     TwitterSession session;
 
     private static final String TAG = "TimelineActivity";
-
+    private static final int REQ_CODE = 99;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +83,7 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         fetchTweets(Constants.TWEET_COUNT);
 
     }
+
 
     private void fetchTweets(int count){
         progressBar.setVisibility(View.VISIBLE);
@@ -170,6 +171,8 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         Log.d(TAG, "itemClicked: " + String.valueOf(position));
         Intent intent = new Intent(TimelineActivity.this,DetailTweetActivity.class);
         Bundle b = new Bundle();
+        b.putInt(Constants.BPOSITION,position);
+        b.putString(Constants.BTWEET_ID_STR,tweets.get(position).idStr);
         b.putString(Constants.BPROFILE_IMG_URL,tweets.get(position).user.profileImageUrl);
         b.putString(Constants.BUSERNAME,tweets.get(position).user.name);
         b.putString(Constants.BTWITTERNAME,tweets.get(position).user.screenName);
@@ -179,6 +182,26 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         b.putBoolean(Constants.BRETWEETED,tweets.get(position).retweeted);
         b.putBoolean(Constants.BFAVORITED,tweets.get(position).favorited);
         intent.putExtras(b);
-        startActivity(intent);
+        startActivityForResult(intent,REQ_CODE);
+
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQ_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                if(data.getBooleanExtra(Constants.FAV_STATUS,false)){
+                    int fav_position = data.getIntExtra(Constants.POSITION,-1);
+                    if(fav_position > 0){
+                        Log.d(TAG, "onActivityResult: called");
+                        //we need to use our own Tweet model object
+                        // because the one provided by twitter makes
+                        // all the fields final and we can't change them
+                    }
+                }
+            }
+        }
     }
 }

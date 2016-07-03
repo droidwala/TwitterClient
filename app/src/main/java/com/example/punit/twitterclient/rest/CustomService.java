@@ -5,7 +5,9 @@ import com.twitter.sdk.android.core.models.Tweet;
 import java.util.List;
 
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
@@ -24,4 +26,14 @@ public interface CustomService {
     void showMoreTimeline(@Query("count") int count,
                           @Query("max_id") long id,
                           Callback<List<Tweet>> cb);
+
+    //Favorites a tweet
+    @POST("/1.1/favorites/create.json")
+    void favoriteTweet(@Query("id") long id,
+                       Callback<Response> cb);
+
+    //UnFav a tweet
+    @POST("/1.1/favorites/destroy.json")
+    void unfavoriteTweet(@Query("id") long id,
+                         Callback<Response> cb);
 }
