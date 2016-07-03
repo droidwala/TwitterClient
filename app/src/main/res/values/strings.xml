@@ -10,4 +10,7 @@
     <string name="detail_tweet_title">Tweet</string>
     <string name="detail_tweet_retweets_str">RETWEETS</string>
     <string name="detail_tweet_likes_str">LIKES</string>
+    <string name="detail_tweet_twitter_name_at_annotation">\@%1$s</string>
+    <string name="detail_tweet_retweets_count">%1$d RETWEETS</string>
+    <string name="detail_tweet_favs_count">%1$d LIKES</string>
 </resources>

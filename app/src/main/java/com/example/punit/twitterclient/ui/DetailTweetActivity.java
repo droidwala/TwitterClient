@@ -74,23 +74,27 @@ public class DetailTweetActivity extends AppCompatActivity{
 
         tweet_id = Long.parseLong(b.getString(Constants.BTWEET_ID_STR));
         position = b.getInt(Constants.BPOSITION);
+
+        //setting up profile image
         Picasso.with(this)
                 .load(b.getString(Constants.BPROFILE_IMG_URL))
                 .placeholder(R.drawable.profile_image_placeholder)
                 .into(profile_image);
 
+        //setting up username,twitter_name and tweet
         user_name.setText(b.getString(Constants.BUSERNAME,""));
-        String twittername = "@" + b.getString(Constants.BTWITTERNAME,"");
-        twitter_name.setText(twittername);
+        twitter_name.setText(getString(R.string.detail_tweet_twitter_name_at_annotation,b.getString(Constants.BTWITTERNAME,"")));
         tweet.setText(b.getString(Constants.BTWEET,""));
-        String retweets = String.valueOf(b.getInt(Constants.BRETWEETS,0)) + " " + getString(R.string.detail_tweet_retweets_str);
-        retweets_count.setText(retweets);
-        String likes = String.valueOf(b.getInt(Constants.BLIKES,0)) + " " + getString(R.string.detail_tweet_likes_str);
-        likes_count.setText(likes);
 
+        //Setting up retweets and likes count
+        retweet_count = b.getInt(Constants.BRETWEETS,0);
+        fav_count = b.getInt(Constants.BLIKES,0);
+        retweets_count.setText(getString(R.string.detail_tweet_retweets_count,retweet_count));
+        likes_count.setText(getString(R.string.detail_tweet_favs_count,fav_count));
+
+        //Show Retweeted and Liked status by icons
         fav_status = b.getBoolean(Constants.BFAVORITED,false);
         retweet_status = b.getBoolean(Constants.BRETWEETED,false);
-
         if(fav_status) {
             like.setChecked(true);
         }
@@ -98,6 +102,7 @@ public class DetailTweetActivity extends AppCompatActivity{
             retweet.setChecked(true);
         }
 
+        //Setting up Client
         TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         apiClient = new MyTwitterApiClient(session);
     }
@@ -113,6 +118,8 @@ public class DetailTweetActivity extends AppCompatActivity{
                     if(result.response.getStatus() == 200){
                         Toast.makeText(DetailTweetActivity.this,"RETWEETED",Toast.LENGTH_SHORT).show();
                         retweet_status = true;
+                        retweet_count +=1;
+                        retweets_count.setText(getString(R.string.detail_tweet_retweets_count,retweet_count));
                     }
                 }
 
@@ -137,6 +144,8 @@ public class DetailTweetActivity extends AppCompatActivity{
                     if(result.response.getStatus() == 200){
                         Toast.makeText(DetailTweetActivity.this,"UNLIKED!",Toast.LENGTH_SHORT).show();
                         fav_status = false;
+                        fav_count -=1;
+                        likes_count.setText(getString(R.string.detail_tweet_favs_count,fav_count));
                     }
                 }
 
@@ -157,6 +166,8 @@ public class DetailTweetActivity extends AppCompatActivity{
                     if (result.response.getStatus() == 200) {
                         Toast.makeText(DetailTweetActivity.this, "LIKED!!", Toast.LENGTH_SHORT).show();
                         fav_status = true;
+                        fav_count +=1;
+                        likes_count.setText(getString(R.string.detail_tweet_favs_count,fav_count));
                     }
                 }
 
