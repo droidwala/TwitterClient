@@ -8,6 +8,7 @@ import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -36,4 +37,11 @@ public interface CustomService {
     @POST("/1.1/favorites/destroy.json")
     void unfavoriteTweet(@Query("id") long id,
                          Callback<Response> cb);
+
+
+    //Retweet a tweet
+    @POST("/1.1/statuses/retweet/{id}.json")
+    void retweetTweet(@Path("id") long id,
+                      Callback<Response> cb);
+
 }

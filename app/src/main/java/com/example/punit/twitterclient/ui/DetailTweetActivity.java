@@ -48,6 +48,7 @@ public class DetailTweetActivity extends AppCompatActivity{
     long tweet_id;
 
     boolean fav_status;
+    boolean retweet_status;
     int position;
 
     private static final String TAG = "DetailTweetActivity";
@@ -85,12 +86,12 @@ public class DetailTweetActivity extends AppCompatActivity{
         likes_count.setText(likes);
 
         fav_status = b.getBoolean(Constants.BFAVORITED,false);
-
+        retweet_status = b.getBoolean(Constants.BRETWEETED,false);
 
         if(fav_status) {
             like.setChecked(true);
         }
-        if(b.getBoolean(Constants.BRETWEETED,false)) {
+        if(retweet_status) {
             retweet.setChecked(true);
         }
 
@@ -100,8 +101,25 @@ public class DetailTweetActivity extends AppCompatActivity{
 
 
     public void retweet(View view){
-        retweet.setChecked(true);
-        //Toast.makeText(DetailTweetActivity.this,"Retweeted!",Toast.LENGTH_SHORT).show();
+        if(!retweet.isChecked()){
+            retweet.setChecked(true);
+            apiClient.getCustomService().retweetTweet(tweet_id, new Callback<Response>() {
+                @Override
+                public void success(Result<Response> result) {
+                    if(result.response.getStatus() == 200){
+                        Toast.makeText(DetailTweetActivity.this,"RETWEETED",Toast.LENGTH_SHORT).show();
+                        retweet_status = true;
+                    }
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    Toast.makeText(DetailTweetActivity.this,exception.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                    retweet.setChecked(false);
+                    retweet_status = false;
+                }
+            });
+        }
     }
 
     public void like(View view){
