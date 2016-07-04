@@ -33,4 +33,5 @@ public class Constants {
     public static final String CTWITTER_NAME = "twitter_name";
     public static final String CUSER_NAME = "user_name";
     public static final String CTWEET_ID = "tweet_id";
+    public static final String CMENTIONS = "mentions";
 }

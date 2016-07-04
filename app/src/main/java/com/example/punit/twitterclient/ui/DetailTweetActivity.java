@@ -23,6 +23,10 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.MentionEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +59,7 @@ public class DetailTweetActivity extends AppCompatActivity{
     int position;
 
     Bundle b;
+    ArrayList<String> users;
     private static final String TAG = "DetailTweetActivity";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +109,7 @@ public class DetailTweetActivity extends AppCompatActivity{
             retweet.setChecked(true);
         }
 
+        users = b.getStringArrayList(Constants.CMENTIONS);
         //Setting up Client
         TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         apiClient = new MyTwitterApiClient(session);
@@ -192,7 +198,10 @@ public class DetailTweetActivity extends AppCompatActivity{
         Intent reply_intent = new Intent(DetailTweetActivity.this, ComposeTweetActivity.class);
         Bundle b = new Bundle();
         b.putString(Constants.CUSER_NAME,user_name.getText().toString());
-        b.putString(Constants.CTWITTER_NAME,twitter_name.getText().toString());
+        if(users!=null && users.size()>0){
+            b.putStringArrayList(Constants.CMENTIONS,users);
+        }
+        b.putString(Constants.CTWITTER_NAME, twitter_name.getText().toString());
         b.putLong(Constants.CTWEET_ID,tweet_id);
         reply_intent.putExtras(b);
         startActivity(reply_intent);

@@ -26,7 +26,7 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.models.MentionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,6 +178,15 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         b.putString(Constants.BUSERNAME,tweets.get(position).user.name);
         b.putString(Constants.BTWITTERNAME,tweets.get(position).user.screenName);
         b.putString(Constants.BTWEET,tweets.get(position).text);
+        List<MentionEntity> user_mentions = tweets.get(position).entities.userMentions;
+        if(user_mentions.size()>0){
+            int length = user_mentions.size();
+            ArrayList<String> user_names = new ArrayList<>();
+            for(int i=0;i<length;i++){
+                user_names.add("@" + user_mentions.get(i).screenName);
+            }
+            b.putStringArrayList(Constants.CMENTIONS,user_names);
+        }
         if(tweets.get(position).retweetedStatus!=null) {
             b.putInt(Constants.BRETWEETS, tweets.get(position).retweetedStatus.retweetCount);
             b.putInt(Constants.BLIKES, tweets.get(position).retweetedStatus.favoriteCount);

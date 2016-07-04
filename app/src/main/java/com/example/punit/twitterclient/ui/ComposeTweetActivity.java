@@ -20,6 +20,8 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit.client.Response;
@@ -53,7 +55,17 @@ public class ComposeTweetActivity extends AppCompatActivity{
         b = getIntent().getExtras();
 
         reply_to_user.setText("In reply to " + b.getString(Constants.CUSER_NAME,""));
-        reply_text.append(b.getString(Constants.CTWITTER_NAME,""));
+        if(b.getStringArrayList(Constants.CMENTIONS)!=null){
+            ArrayList<String> users = b.getStringArrayList(Constants.CMENTIONS);
+            for(String s:users){
+                reply_text.append(s + " ");
+            }
+
+            reply_text.append(b.getString(Constants.CTWITTER_NAME,"") + " ");
+        }
+        else {
+            reply_text.append(b.getString(Constants.CTWITTER_NAME, "") + " ");
+        }
         tweet_id = b.getLong(Constants.CTWEET_ID,0);
 
 
