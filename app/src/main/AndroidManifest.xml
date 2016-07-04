@@ -22,6 +22,7 @@
 
         <activity android:name=".ui.TimelineActivity"/>
         <activity android:name=".ui.DetailTweetActivity"/>
+        <activity android:name=".ui.ComposeTweetActivity"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"

@@ -34,4 +34,9 @@
     <dimen name="detail_tweet_timestamp_margin_top">8dp</dimen>
     <dimen name="detail_tweet_likes_count_margin_left">8dp</dimen>
     <dimen name="detail_tweet_likes_retweets_bg_padding">4dp</dimen>
+
+
+    <!--Compose Tweet dimens -->
+    <dimen name="compose_tweet_reply_text_margin">25dp</dimen>
+    <dimen name="compose_tweet_edittext_margin">8dp</dimen>
 </resources>

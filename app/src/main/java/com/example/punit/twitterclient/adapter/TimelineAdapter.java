@@ -14,9 +14,7 @@ import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.util.ClickListener;
 import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.core.models.Tweet;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

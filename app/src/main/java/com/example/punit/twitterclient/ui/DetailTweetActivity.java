@@ -54,6 +54,7 @@ public class DetailTweetActivity extends AppCompatActivity{
     boolean retweet_status_changed = false;
     int position;
 
+    Bundle b;
     private static final String TAG = "DetailTweetActivity";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +71,7 @@ public class DetailTweetActivity extends AppCompatActivity{
         }
         page_title.setText(getString(R.string.detail_tweet_title));
 
-        Bundle b = getIntent().getExtras();
+        b = getIntent().getExtras();
 
         tweet_id = Long.parseLong(b.getString(Constants.BTWEET_ID_STR));
         position = b.getInt(Constants.BPOSITION);
@@ -89,6 +90,7 @@ public class DetailTweetActivity extends AppCompatActivity{
         //Setting up retweets and likes count
         retweet_count = b.getInt(Constants.BRETWEETS,0);
         fav_count = b.getInt(Constants.BLIKES,0);
+        Log.d(TAG, "onCreate: " + String.valueOf(fav_count));
         retweets_count.setText(getString(R.string.detail_tweet_retweets_count,retweet_count));
         likes_count.setText(getString(R.string.detail_tweet_favs_count,fav_count));
 
@@ -131,6 +133,9 @@ public class DetailTweetActivity extends AppCompatActivity{
                 }
             });
         }
+        else{
+            Toast.makeText(DetailTweetActivity.this,"You cannot undo retweet.This feature will be soon added!",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void like(View view){
@@ -145,6 +150,7 @@ public class DetailTweetActivity extends AppCompatActivity{
                         Toast.makeText(DetailTweetActivity.this,"UNLIKED!",Toast.LENGTH_SHORT).show();
                         fav_status = false;
                         fav_count -=1;
+                        Log.d(TAG, "success: unfavorited" + String.valueOf(fav_count));
                         likes_count.setText(getString(R.string.detail_tweet_favs_count,fav_count));
                     }
                 }
@@ -167,6 +173,7 @@ public class DetailTweetActivity extends AppCompatActivity{
                         Toast.makeText(DetailTweetActivity.this, "LIKED!!", Toast.LENGTH_SHORT).show();
                         fav_status = true;
                         fav_count +=1;
+                        Log.d(TAG, "success: favorited " + String.valueOf(fav_count));
                         likes_count.setText(getString(R.string.detail_tweet_favs_count,fav_count));
                     }
                 }
@@ -180,6 +187,18 @@ public class DetailTweetActivity extends AppCompatActivity{
             });
         }
     }
+
+    public void reply(View view) {
+        Intent reply_intent = new Intent(DetailTweetActivity.this, ComposeTweetActivity.class);
+        Bundle b = new Bundle();
+        b.putString(Constants.CUSER_NAME,user_name.getText().toString());
+        b.putString(Constants.CTWITTER_NAME,twitter_name.getText().toString());
+        b.putLong(Constants.CTWEET_ID,tweet_id);
+        reply_intent.putExtras(b);
+        startActivity(reply_intent);
+        overridePendingTransition(R.anim.modal_activity_open_enter,R.anim.modal_activity_close_exit);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -187,6 +206,7 @@ public class DetailTweetActivity extends AppCompatActivity{
                 if(fav_status_changed || retweet_status_changed) {
                     sendResult();
                 }
+                finish();
                 break;
             default:
                 break;
@@ -211,16 +231,20 @@ public class DetailTweetActivity extends AppCompatActivity{
             intent.putExtra(Constants.CHANGE_ID,Constants.BOTH_CHANGED_ID);
             intent.putExtra(Constants.FAV_STATUS,fav_status);
             intent.putExtra(Constants.RT_STATUS,retweet_status);
+            intent.putExtra(Constants.FAV_COUNT,fav_count);
+            intent.putExtra(Constants.RT_COUNT,retweet_count);
         }
         else if(fav_status_changed){
             Log.d(TAG, "sendResult: Fav changed");
             intent.putExtra(Constants.CHANGE_ID,Constants.FAV_CHANGED_ID);
             intent.putExtra(Constants.FAV_STATUS,fav_status);
+            intent.putExtra(Constants.FAV_COUNT,fav_count);
         }
         else{
             Log.d(TAG, "sendResult: RT Changed");
             intent.putExtra(Constants.CHANGE_ID,Constants.RT_CHANGED_ID);
             intent.putExtra(Constants.RT_STATUS,retweet_status);
+            intent.putExtra(Constants.RT_COUNT,retweet_count);
         }
         setResult(Activity.RESULT_OK,intent);
         finish();

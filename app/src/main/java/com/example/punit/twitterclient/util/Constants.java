@@ -26,4 +26,11 @@ public class Constants {
     public static final String FAV_STATUS = "fav_status";
     public static final String RT_STATUS = "rt_status";
     public static final String POSITION = "position";
+    public static final String FAV_COUNT = "fav_count";
+    public static final String RT_COUNT = "rt_count";
+
+
+    public static final String CTWITTER_NAME = "twitter_name";
+    public static final String CUSER_NAME = "user_name";
+    public static final String CTWEET_ID = "tweet_id";
 }

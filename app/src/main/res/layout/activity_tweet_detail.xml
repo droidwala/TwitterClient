@@ -98,7 +98,8 @@
             android:layout_height="20dp"
             android:src="@drawable/action_reply"
             android:layout_weight="1"
-            android:clickable="true" />
+            android:clickable="true"
+            android:onClick="reply"/>
         <com.example.punit.twitterclient.util.CheckableImageView
             android:id="@+id/retweet_btn"
             android:layout_width="20dp"

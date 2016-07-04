@@ -45,4 +45,10 @@ public interface CustomService {
     void retweetTweet(@Path("id") long id,
                       Callback<Response> cb);
 
+    //Reply to a tweet
+    @POST("/1.1/statuses/update.json")
+    void replyToTweet(@Query(encodeValue = true,value="status") String reply,
+                      @Query("in_reply_to_status_id") long id,
+                      Callback<Response> cb);
+
 }

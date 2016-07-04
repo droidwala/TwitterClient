@@ -178,12 +178,19 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         b.putString(Constants.BUSERNAME,tweets.get(position).user.name);
         b.putString(Constants.BTWITTERNAME,tweets.get(position).user.screenName);
         b.putString(Constants.BTWEET,tweets.get(position).text);
-        b.putInt(Constants.BRETWEETS,tweets.get(position).retweetCount);
-        b.putInt(Constants.BLIKES,tweets.get(position).favoriteCount);
+        if(tweets.get(position).retweetedStatus!=null) {
+            b.putInt(Constants.BRETWEETS, tweets.get(position).retweetedStatus.retweetCount);
+            b.putInt(Constants.BLIKES, tweets.get(position).retweetedStatus.favoriteCount);
+        }
+        else{
+            b.putInt(Constants.BRETWEETS,tweets.get(position).retweetCount);
+            b.putInt(Constants.BLIKES,tweets.get(position).favoriteCount);
+        }
         b.putBoolean(Constants.BRETWEETED,tweets.get(position).retweeted);
         b.putBoolean(Constants.BFAVORITED,tweets.get(position).favorited);
         intent.putExtras(b);
         startActivityForResult(intent,REQ_CODE);
+
 
     }
 
@@ -198,6 +205,7 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
                 int position = data.getIntExtra(Constants.POSITION, -1);
                 int change_id = data.getIntExtra(Constants.CHANGE_ID, -1);
                 boolean fav_status, rt_status;
+                int fav_count,rt_count;
                 if (position > 0) {
                     Log.d(TAG, "onActivityResult: " + String.valueOf(position));
                     switch (change_id) {
@@ -207,22 +215,26 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
                             rt_status = data.getBooleanExtra(Constants.RT_STATUS, false);
                             tweets.get(position).setfavorite(fav_status);
                             tweets.get(position).setRetweet(rt_status);
-                            changeFavCounter(fav_status,position);
-                            changeRtCounter(rt_status,position);
+                            fav_count = data.getIntExtra(Constants.FAV_COUNT,0);
+                            rt_count = data.getIntExtra(Constants.RT_COUNT,0);
+                            changeFavCounter(position,fav_count);
+                            changeRtCounter(position,rt_count);
                             break;
 
                         case Constants.FAV_CHANGED_ID:
                             Log.d(TAG, "onActivityResult: Fav changed");
                             fav_status = data.getBooleanExtra(Constants.FAV_STATUS, false);
                             tweets.get(position).setfavorite(fav_status);
-                            changeFavCounter(fav_status,position);
+                            fav_count  = data.getIntExtra(Constants.FAV_COUNT,0);
+                            changeFavCounter(position,fav_count);
                             break;
 
                         case Constants.RT_CHANGED_ID:
                             Log.d(TAG, "onActivityResult: Rt changed");
                             rt_status = data.getBooleanExtra(Constants.RT_STATUS,false);
                             tweets.get(position).setRetweet(rt_status);
-                            changeRtCounter(rt_status,position);
+                            rt_count = data.getIntExtra(Constants.RT_COUNT,0);
+                            changeRtCounter(position,rt_count);
                             break;
                         default:
                             break;
@@ -233,22 +245,21 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         }
     }
 
-    private void changeRtCounter(boolean rt_status,int position){
-        if(rt_status){
-            tweets.get(position).incrementRtcount();
+    private void changeRtCounter(int position,int rt_count){
+        if(tweets.get(position).retweetedStatus!=null) {
+            tweets.get(position).retweetedStatus.setRtCount(rt_count);
         }
         else{
-            tweets.get(position).decrementRtCount();
+            tweets.get(position).setRtCount(rt_count);
         }
-
     }
 
-    private void changeFavCounter(boolean fav_status,int position){
-        if(fav_status){
-            tweets.get(position).incrementFavCount();
+    private void changeFavCounter(int position,int fav_count){
+        if(tweets.get(position).retweetedStatus!=null){
+            tweets.get(position).retweetedStatus.setFavoriteCount(fav_count);
         }
         else{
-            tweets.get(position).decrementFavCount();
+            tweets.get(position).setFavoriteCount(fav_count);
         }
     }
 

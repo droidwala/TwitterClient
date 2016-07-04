@@ -51,14 +51,10 @@ public class Timeline implements Serializable{
      * users.
      */
     @SerializedName("favorite_count")
-    public  Integer favoriteCount;
+    public Integer favoriteCount;
 
-    public void incrementFavCount(){
-        this.favoriteCount +=1;
-    }
-
-    public void decrementFavCount(){
-        this.favoriteCount -=1;
+    public void setFavoriteCount(int count){
+        this.favoriteCount = count;
     }
 
     /**
@@ -140,13 +136,10 @@ public class Timeline implements Serializable{
     @SerializedName("retweet_count")
     public int retweetCount;
 
-    public void incrementRtcount(){
-        this.retweetCount +=1;
+    public void setRtCount(int count){
+        this.retweetCount = count;
     }
 
-    public void decrementRtCount(){
-        this.retweetCount -=1;
-    }
 
 
     /**
@@ -167,7 +160,7 @@ public class Timeline implements Serializable{
      * original tweet. (Users can also unretweet a retweet they created by deleting their retweet.)
      */
     @SerializedName("retweeted_status")
-    public  Tweet retweetedStatus;
+    public  Timeline retweetedStatus;
 
     /**
      * Utility used to post the Tweet, as an HTML-formatted string. Tweets from the Twitter website
