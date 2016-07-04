@@ -206,6 +206,14 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
     }
 
 
+    public void composeTweet(View view){
+        Intent compose_intent = new Intent(TimelineActivity.this,ComposeTweetActivity.class);
+        Bundle b = new Bundle();
+        b.putBoolean(Constants.OPEN_COMPOSE,true);
+        compose_intent.putExtras(b);
+        startActivity(compose_intent);
+        overridePendingTransition(R.anim.modal_activity_open_enter,R.anim.modal_activity_close_exit);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

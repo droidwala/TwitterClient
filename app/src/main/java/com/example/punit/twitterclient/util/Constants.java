@@ -34,4 +34,6 @@ public class Constants {
     public static final String CUSER_NAME = "user_name";
     public static final String CTWEET_ID = "tweet_id";
     public static final String CMENTIONS = "mentions";
+
+    public static final String OPEN_COMPOSE = "open_compose";
 }

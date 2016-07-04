@@ -51,23 +51,24 @@ public class ComposeTweetActivity extends AppCompatActivity{
 
         toolbar.setNavigationIcon(R.drawable.ic_cc_nav_dismiss);
 
-
         b = getIntent().getExtras();
-
-        reply_to_user.setText("In reply to " + b.getString(Constants.CUSER_NAME,""));
-        if(b.getStringArrayList(Constants.CMENTIONS)!=null){
-            ArrayList<String> users = b.getStringArrayList(Constants.CMENTIONS);
-            for(String s:users){
-                reply_text.append(s + " ");
-            }
-
-            reply_text.append(b.getString(Constants.CTWITTER_NAME,"") + " ");
+        if(b.getBoolean(Constants.OPEN_COMPOSE,false)){
+            hideReplyToUserText();
         }
         else {
-            reply_text.append(b.getString(Constants.CTWITTER_NAME, "") + " ");
-        }
-        tweet_id = b.getLong(Constants.CTWEET_ID,0);
+            reply_to_user.setText("In reply to " + b.getString(Constants.CUSER_NAME, ""));
+            if (b.getStringArrayList(Constants.CMENTIONS) != null) {
+                ArrayList<String> users = b.getStringArrayList(Constants.CMENTIONS);
+                for (String s : users) {
+                    reply_text.append(s + " ");
+                }
+                reply_text.append(b.getString(Constants.CTWITTER_NAME, "") + " ");
+            } else {
+                reply_text.append(b.getString(Constants.CTWITTER_NAME, "") + " ");
+            }
 
+            tweet_id = b.getLong(Constants.CTWEET_ID, 0);
+        }
 
         //setting up client
         TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
@@ -75,9 +76,20 @@ public class ComposeTweetActivity extends AppCompatActivity{
 
     }
 
-    public void replyToTweet(View view){
+    public void compose(View view){
+        if(b.getBoolean(Constants.OPEN_COMPOSE,false)){
+            composeTweet();
+        }
+        else{
+            replyToTweet(tweet_id);
+        }
+
+    }
+
+
+    private void replyToTweet(long id){
         apiClient.getCustomService().replyToTweet(reply_text.getText().toString(),
-                tweet_id,
+                id,
                 new Callback<Response>() {
                     @Override
                     public void success(Result<Response> result) {
@@ -89,12 +101,28 @@ public class ComposeTweetActivity extends AppCompatActivity{
 
                     @Override
                     public void failure(TwitterException exception) {
-                         Toast.makeText(ComposeTweetActivity.this,exception.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ComposeTweetActivity.this,exception.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    private void composeTweet(){
+        apiClient.getCustomService().postTweet(reply_text.getText().toString(),
+                new Callback<Response>() {
+                    @Override
+                    public void success(Result<Response> result) {
+                        if(result.response.getStatus() == 200){
+                            Toast.makeText(ComposeTweetActivity.this,"Tweet posted",Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
 
+                    @Override
+                    public void failure(TwitterException exception) {
+                        Toast.makeText(ComposeTweetActivity.this,exception.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -106,4 +134,11 @@ public class ComposeTweetActivity extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void hideReplyToUserText(){
+        reply_to_user.setVisibility(View.GONE);
+        reply_text.setHint(getString(R.string.compose_hint_text));
+    }
+
 }

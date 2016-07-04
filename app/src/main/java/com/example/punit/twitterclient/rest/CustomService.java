@@ -1,5 +1,6 @@
 package com.example.punit.twitterclient.rest;
 
+import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.model.Timeline;
 import com.twitter.sdk.android.core.models.Tweet;
 
@@ -39,7 +40,6 @@ public interface CustomService {
     void unfavoriteTweet(@Query("id") long id,
                          Callback<Response> cb);
 
-
     //Retweet a tweet
     @POST("/1.1/statuses/retweet/{id}.json")
     void retweetTweet(@Path("id") long id,
@@ -51,4 +51,8 @@ public interface CustomService {
                       @Query("in_reply_to_status_id") long id,
                       Callback<Response> cb);
 
+    //Compose tweet
+    @POST("/1.1/statuses/update.json")
+    void postTweet(@Query(encodeValue = true,value = "status") String tweet,
+                   Callback<Response> cb);
 }

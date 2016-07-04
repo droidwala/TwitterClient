@@ -30,6 +30,7 @@ dependencies {
     testCompile "junit:junit:$rootProject.ext.jUnitVersion"
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.ext.supportLibVersion"
+    compile "com.android.support:design:$rootProject.ext.supportLibVersion"
 
     compile "com.jakewharton:butterknife:$rootProject.ext.butterKnifeVersion"
     apt "com.jakewharton:butterknife-compiler:$rootProject.ext.butterKnifeVersion"

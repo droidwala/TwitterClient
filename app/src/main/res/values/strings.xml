@@ -13,4 +13,8 @@
     <string name="detail_tweet_twitter_name_at_annotation">\@%1$s</string>
     <string name="detail_tweet_retweets_count">%1$d RETWEETS</string>
     <string name="detail_tweet_favs_count">%1$d LIKES</string>
+
+    <!--Compose Tweet Activity -->
+    <string name="compose_hint_text">What\'s up</string>
+    <string name="compose_tweet_btn_text">Tweet</string>
 </resources>
