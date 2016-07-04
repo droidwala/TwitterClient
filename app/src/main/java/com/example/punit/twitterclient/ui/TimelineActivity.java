@@ -1,6 +1,7 @@
 package com.example.punit.twitterclient.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
 public class TimelineActivity extends AppCompatActivity implements ClickListener{
@@ -272,4 +274,9 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         }
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 }

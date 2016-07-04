@@ -13,8 +13,6 @@
         android:id="@+id/user_profile_img_timeline_row"
         android:layout_width="@dimen/timeline_row_image_size"
         android:layout_height="@dimen/timeline_row_image_size"
-        android:layout_marginLeft="@dimen/timeline_row_image_margin_left"
-        android:layout_marginStart="@dimen/timeline_row_image_margin_left"
         app:riv_corner_radius="@dimen/timeline_row_image_corner_radius"
         android:layout_alignTop="@+id/username_timeline_row"/>
     <TextView

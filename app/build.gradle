@@ -41,6 +41,8 @@ dependencies {
     compile "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
     compile "com.makeramen:roundedimageview:$rootProject.ext.roundedImageVersion"
 
+    compile "uk.co.chrisjenx:calligraphy:$rootProject.ext.calligraphyVersion"
+
     compile('com.twitter.sdk.android:twitter:1.14.0@aar') {
         transitive = true;
     }

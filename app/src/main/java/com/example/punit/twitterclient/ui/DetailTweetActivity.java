@@ -1,6 +1,7 @@
 package com.example.punit.twitterclient.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,20 +18,20 @@ import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.util.CheckableImageView;
 import com.example.punit.twitterclient.util.Constants;
+import com.example.punit.twitterclient.util.Utility;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.MentionEntity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit.client.Response;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class DetailTweetActivity extends AppCompatActivity{
 
@@ -91,6 +92,7 @@ public class DetailTweetActivity extends AppCompatActivity{
         user_name.setText(b.getString(Constants.BUSERNAME,""));
         twitter_name.setText(getString(R.string.detail_tweet_twitter_name_at_annotation,b.getString(Constants.BTWITTERNAME,"")));
         tweet.setText(b.getString(Constants.BTWEET,""));
+        Utility.hashTagsAndLinks(tweet);
 
         //Setting up retweets and likes count
         retweet_count = b.getInt(Constants.BRETWEETS,0);
@@ -259,4 +261,9 @@ public class DetailTweetActivity extends AppCompatActivity{
         finish();
     }
 
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 }

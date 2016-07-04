@@ -29,6 +29,7 @@ ext{
     daggerVersion = '2.0.2'
     roundedImageVersion = '2.2.1'
     picassoVersion = '2.5.2'
+    calligraphyVersion = '2.2.0'
 
 }
 

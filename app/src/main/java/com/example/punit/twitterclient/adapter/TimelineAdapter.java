@@ -2,7 +2,6 @@ package com.example.punit.twitterclient.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,10 @@ import android.widget.TextView;
 import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.util.ClickListener;
+import com.example.punit.twitterclient.util.Utility;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -174,7 +172,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         itemViewHolder.user_tweet.setText(tweets.get(position).text);
 
         //Make #Hashtag,@Mentions and Links clickable in tweet textview
-        hashTagsAndLinks(itemViewHolder.user_tweet);
+        Utility.hashTagsAndLinks(itemViewHolder.user_tweet);
         itemViewHolder.twitter_name.setText("@" +tweets.get(position).user.screenName);
 
         Picasso.with(context)
@@ -230,30 +228,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
 
-    /**
-     * creates clickable hashtags,mentions and links in supplied TextView
-     * @param textView
-     */
-    private void hashTagsAndLinks(TextView textView){
 
-        Pattern atMentionPattern = Pattern.compile("@([A-Za-z0-9_]+)");
-        String atMentionScheme = "http://twitter.com/";
-
-        Pattern atHashTagPattern = Pattern.compile("#([A-Za-z0-9_]+)");
-        String atHashTagScheme = "http://twitter.com/hashtag/";
-
-        Linkify.TransformFilter transformFilter = new Linkify.TransformFilter() {
-            //skip the first character to filter out '@'
-            public String transformUrl(final Matcher match, String url) {
-                return match.group(1);
-            }
-        };
-
-        Linkify.addLinks(textView, Linkify.ALL);
-        Linkify.addLinks(textView, atMentionPattern, atMentionScheme, null, transformFilter);
-        Linkify.addLinks(textView, atHashTagPattern, atHashTagScheme, null, transformFilter);
-
-    }
 
     //ClickListener Initialization
     public void setClickListener(ClickListener listener){

@@ -18,6 +18,7 @@
         <item name="android:lineSpacingExtra">2sp</item>
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textColorLink">@color/colorPrimaryDark</item>
+        <item name="fontPath">fonts/Montserrat-Light.otf</item>
     </style>
 
 </resources>
