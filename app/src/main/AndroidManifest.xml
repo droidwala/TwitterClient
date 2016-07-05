@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.punit.twitterclient">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +29,7 @@
         <activity android:name=".ui.ComposeTweetActivity"
                   android:windowSoftInputMode="adjustResize"/>
 
+        <service android:name=".service.TweetUploadService" android:exported="false"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="be2a9cff9d93a30c3f97c87ebf2cfd3cb3357632" />

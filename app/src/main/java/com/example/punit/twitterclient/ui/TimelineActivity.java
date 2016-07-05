@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +47,8 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
     //Views
     @BindView(R.id.timeline_rv) RecyclerView timeline_rv;
     @BindView(R.id.progressBar) ProgressBar progressBar;
+    @BindView(R.id.compose_tweet_fab_btn)
+    FloatingActionButton fab;
 
     LinearLayoutManager linearLayoutManager;
     TimelineAdapter adapter;

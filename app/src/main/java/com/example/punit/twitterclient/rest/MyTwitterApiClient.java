@@ -31,5 +31,4 @@ public class MyTwitterApiClient extends TwitterApiClient {
         return getService(CustomService.class);
     }
 
-
 }

@@ -36,4 +36,7 @@ public class Constants {
     public static final String CMENTIONS = "mentions";
 
     public static final String OPEN_COMPOSE = "open_compose";
+
+    public static final int IMAGE_REQ_CODE = 999;
+    public static final int TWEET_NOTIF_ID = 199;
 }

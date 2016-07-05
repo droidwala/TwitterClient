@@ -23,21 +23,36 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/compose_tweet_reply_text_margin"
         tools:text="In reply to Punit Dama"/>
-    
-    <EditText
-        android:id="@+id/reply_text"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginLeft="@dimen/compose_tweet_edittext_margin"
-        android:layout_marginRight="@dimen/compose_tweet_edittext_margin"
-        android:backgroundTint="@android:color/transparent"
-        android:gravity="top|left"
-        android:layout_margin="8dp"
-        android:maxLength="140"
-        android:padding="4dp"
-        android:textColorHint="@color/divider_color"/>
-
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/reply_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/compose_tweet_edittext_margin"
+                android:layout_marginRight="@dimen/compose_tweet_edittext_margin"
+                android:backgroundTint="@android:color/transparent"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:layout_margin="8dp"
+                android:maxLength="140"
+                android:padding="4dp"
+                android:textColorHint="@color/divider_color"/>
+            <ImageView
+                android:id="@+id/image_attachment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                tools:src="@drawable/highlights_empty_state_bg"/>
+        </LinearLayout>
+    </ScrollView>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -45,18 +60,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp">
+        <ImageView
+            android:id="@+id/attachment_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/compose_camera_btn"
+            android:clickable="true"
+            android:onClick="attachImage"/>
+        <View
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
         <Button
             android:id="@+id/tweet_button"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/compose_tweet_button_height"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="24dp"
             android:text="@string/compose_tweet_btn_text"
             style="?android:attr/selectableItemBackground"
             android:background="@drawable/tweet_button_bg"
             android:textColor="@color/colorWhite"
-            android:onClick="compose"/>
+            android:onClick="compose"
+            android:textAllCaps="false"/>
     </LinearLayout>
 
 </LinearLayout>
