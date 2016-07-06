@@ -29,6 +29,7 @@ public class TweetUploadService extends IntentService {
 
     private static final String TAG = "TweetUploadService";
     String path,tweet;
+    long tweet_id;
     public TweetUploadService() {
         super(TAG);
     }
@@ -38,6 +39,7 @@ public class TweetUploadService extends IntentService {
 
         path = intent.getStringExtra("PATH");
         tweet = intent.getStringExtra("TWEET");
+        tweet_id = intent.getLongExtra("REPLY_ID",0L);
         NotificationUtility.sendNotification(this,tweet,Constants.TWEET_NOTIF_ID);
         File file = new File(path);
         TypedFile typedFile = new TypedFile("application/octet-stream",file);
@@ -48,7 +50,7 @@ public class TweetUploadService extends IntentService {
         apiClient.getMediaService().upload(typedFile, null, null, new Callback<Media>() {
             @Override
             public void success(Result<Media> result) {
-                apiClient.getStatusesService().update(tweet, null, null, null, null, null, null, null, result.data.mediaIdString, new Callback<Tweet>() {
+                apiClient.getStatusesService().update(tweet, tweet_id, null, null, null, null, null, null, result.data.mediaIdString, new Callback<Tweet>() {
                     @Override
                     public void success(Result<Tweet> result) {
                         if(result.response.getStatus() == 200){

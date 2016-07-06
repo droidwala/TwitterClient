@@ -47,7 +47,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
     @BindView(R.id.image_attachment) ImageView attached_image;
     @BindView(R.id.tweet_button) Button tweet_button;
     Bundle b;
-    long tweet_id;
+    long tweet_id = 0L;
 
     MyTwitterApiClient apiClient;
     String path;
@@ -98,23 +98,15 @@ public class ComposeTweetActivity extends AppCompatActivity {
     }
 
     public void compose(View view) {
-        if (b.getBoolean(Constants.OPEN_COMPOSE, false)) {
-            if (tweet_with_image) {
-                composeTweetWithImage(path);
-            }
-            else if(tweet_with_video) {
-                long total_bytes = new File(path).length();
-                composeTweetWithVideo(path,total_bytes,filetype);
-            }
-            else{
-                composeTweet();
-            }
-        } else {
-            if (tweet_with_image) {
-                replyToTweetWithImage(path);
-            } else {
-                replyToTweet(tweet_id);
-            }
+        if (tweet_with_image) {
+            composeTweetWithImage(path,tweet_id);
+        }
+        else if(tweet_with_video) {
+            long total_bytes = new File(path).length();
+            composeTweetWithVideo(path,total_bytes,filetype,tweet_id);
+        }
+        else {
+            composeTweet(tweet_id);
         }
 
     }
@@ -173,34 +165,9 @@ public class ComposeTweetActivity extends AppCompatActivity {
         }
     }
 
-
-
-    private void replyToTweet(long id) {
-        apiClient.getCustomService().replyToTweet(reply_text.getText().toString(),
-                id,
-                new Callback<Response>() {
-                    @Override
-                    public void success(Result<Response> result) {
-                        if (result.response.getStatus() == 200) {
-                            Toast.makeText(ComposeTweetActivity.this, "Replied successfully", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                        Toast.makeText(ComposeTweetActivity.this, exception.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void replyToTweetWithImage(String filePath) {
-        //Implementation coming soon..
-        Toast.makeText(ComposeTweetActivity.this,"Coming soon.",Toast.LENGTH_SHORT).show();
-    }
-
-    private void composeTweet() {
+    private void composeTweet(long id) {
         apiClient.getCustomService().postTweet(reply_text.getText().toString(),
+                id,
                 new Callback<Response>() {
                     @Override
                     public void success(Result<Response> result) {
@@ -218,17 +185,20 @@ public class ComposeTweetActivity extends AppCompatActivity {
     }
 
 
-    private void composeTweetWithImage(String file_path) {
+    private void composeTweetWithImage(String file_path,long id) {
         tweet_button.setEnabled(false);
         Toast.makeText(ComposeTweetActivity.this, "Posting Tweet!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ComposeTweetActivity.this, TweetUploadService.class);
         intent.putExtra("PATH", file_path);
         intent.putExtra("TWEET", reply_text.getText().toString());
+        if(id > 0){
+            intent.putExtra("REPLY_ID",id);
+        }
         startService(intent);
         finish();
     }
 
-    private void composeTweetWithVideo(String file_path,long total_bytes,String file_type){
+    private void composeTweetWithVideo(String file_path,long total_bytes,String file_type,long id){
         tweet_button.setEnabled(false);
         Toast.makeText(ComposeTweetActivity.this,"Posting Tweet!",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(ComposeTweetActivity.this, VideoUploadService.class);
@@ -236,6 +206,9 @@ public class ComposeTweetActivity extends AppCompatActivity {
         intent.putExtra("TWEET",reply_text.getText().toString());
         intent.putExtra("SIZE",total_bytes);
         intent.putExtra("TYPE",file_type);
+        if(id > 0){
+            intent.putExtra("REPLY_ID",id);
+        }
         startService(intent);
         finish();
     }

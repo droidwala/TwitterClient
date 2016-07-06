@@ -28,6 +28,7 @@ public class VideoUploadService extends IntentService {
     String path,file_type,tweet;
     long file_size;
     String media_id;
+    long tweet_id;
     ChunkTwitterApiClient apiClient;
     MyTwitterApiClient statusClient;
     TwitterSession session;
@@ -41,6 +42,7 @@ public class VideoUploadService extends IntentService {
         path = intent.getStringExtra("PATH");
         file_type = intent.getStringExtra("TYPE");
         file_size = intent.getLongExtra("SIZE",0L);
+        tweet_id = intent.getLongExtra("REPLY_ID",0L);
 
         NotificationUtility.sendNotification(this,tweet, Constants.TWEET_VIDEO_NOTIF_ID);
 
@@ -106,7 +108,7 @@ public class VideoUploadService extends IntentService {
 
     private void uploadTWEET(String id){
         statusClient = new MyTwitterApiClient(session);
-        statusClient.getCustomService().postTweetWithVideo(tweet, id, new Callback<Response>() {
+        statusClient.getCustomService().postTweetWithVideo(tweet,tweet_id,id,new Callback<Response>() {
             @Override
             public void success(Result<Response> result) {
                 if(result.data.getStatus() == 200){
