@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,8 +48,8 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
     //Views
     @BindView(R.id.timeline_rv) RecyclerView timeline_rv;
     @BindView(R.id.progressBar) ProgressBar progressBar;
-    @BindView(R.id.compose_tweet_fab_btn)
-    FloatingActionButton fab;
+    @BindView(R.id.compose_tweet_fab_btn) FloatingActionButton fab;
+    @BindView(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     LinearLayoutManager linearLayoutManager;
     TimelineAdapter adapter;
@@ -56,7 +57,8 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
 
     //variables used to load more tweets using pagination
     boolean isLoading = false;
-    long max_id;
+    boolean isRefreshing = false;
+    long max_id,since_id;
 
     //Use to make REST API calls
     MyTwitterApiClient apiClient;
@@ -86,21 +88,62 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         timeline_rv.addItemDecoration(new DividerItemDecoration(TimelineActivity.this,R.drawable.item_divider));
         timeline_rv.addOnScrollListener(recyclerViewScrollListener);
 
+        setUpRefreshListener();
         fetchTweets(Constants.TWEET_COUNT);
 
     }
 
+    private void setUpRefreshListener(){
+        swipeRefreshLayout.setColorSchemeColors(R.color.colorPrimaryDark,R.color.colorAccent);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d(TAG, "onRefresh: called" + String.valueOf(since_id));
+                if(since_id > 0 && !isRefreshing) {
+                    fetchNewTweets();
+                }
+            }
+        });
+    }
+
+    private void fetchNewTweets(){
+        isRefreshing = true;
+        apiClient.getCustomService().showLatestTimeline(since_id, new Callback<List<Timeline>>() {
+            @Override
+            public void success(Result<List<Timeline>> result) {
+                ArrayList<Timeline> tweets = new ArrayList<>(result.data);
+                if(tweets.size()>0){
+                    since_id = tweets.get(0).id;
+                    adapter.addAllAtTop(tweets);
+                    swipeRefreshLayout.setRefreshing(false);
+                    isRefreshing = false;
+                }
+                else{
+                    Toast.makeText(TimelineActivity.this,getString(R.string.no_new_tweets_available),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Toast.makeText(TimelineActivity.this,exception.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                isRefreshing = false;
+            }
+        });
+    }
 
     private void fetchTweets(int count){
         progressBar.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setEnabled(false);
         apiClient.getCustomService().showTimeline(count, new Callback<List<Timeline>>() {
             @Override
             public void success(Result<List<Timeline>> result) {
+                swipeRefreshLayout.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
                 isLoading = false;
                 tweets = new ArrayList<>(result.data);
                 if(tweets.size()>0){
                     max_id = (tweets.get(tweets.size()-1).id) - 1L;
+                    since_id = tweets.get(0).id;
                     adapter = new TimelineAdapter(TimelineActivity.this,tweets);
                     adapter.setClickListener(TimelineActivity.this);
                     timeline_rv.setAdapter(adapter);
@@ -113,7 +156,6 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
             @Override
             public void failure(TwitterException exception) {
                 progressBar.setVisibility(View.GONE);
-                Log.d(TAG, "failure: " + exception.getMessage());
                 Toast.makeText(TimelineActivity.this,exception.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
             }
         });
@@ -135,8 +177,8 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
 
             @Override
             public void failure(TwitterException exception) {
-                progressBar.setVisibility(View.GONE);
-                Log.d(TAG, "failure: " + exception.getMessage());
+                adapter.removeLoading();
+                isLoading = false;
                 Toast.makeText(TimelineActivity.this,exception.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
             }
         });

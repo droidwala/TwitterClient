@@ -8,11 +8,16 @@
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar_with_image_and_title" />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/timeline_rv"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"/>
+        android:layout_below="@+id/toolbar">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/timeline_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/progress_bar_width_height"

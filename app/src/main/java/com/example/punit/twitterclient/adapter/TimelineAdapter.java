@@ -104,6 +104,20 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return tweets.get(position);
     }
 
+
+    private void add(int position,Timeline tweet){
+        tweets.add(position,tweet);
+    }
+    public void addAllAtTop(ArrayList<Timeline> tweets) {
+        int position = 0;
+        for(Timeline tweet:tweets){
+            add(position,tweet);
+            position++;
+        }
+        notifyDataSetChanged();
+    }
+
+
     private void add(Timeline tweet){
         tweets.add(tweet);
     }
@@ -116,6 +130,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         for(Timeline tweet:tweets){
             add(tweet);
         }
+        notifyDataSetChanged();
     }
 
     /**
@@ -190,6 +205,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LoadMoreHolder loadMoreHolder = (LoadMoreHolder) holder;
         loadMoreHolder.progressBar.setIndeterminate(true);
     }
+
 
     /**
      * Tweet row viewHolder implementation

@@ -30,6 +30,10 @@ public interface CustomService {
                           @Query("max_id") long id,
                           Callback<List<Timeline>> cb);
 
+    @GET("/1.1/statuses/home_timeline.json")
+    void showLatestTimeline(@Query("since_id") long id,
+                            Callback<List<Timeline>> cb);
+
     //Favorites a tweet
     @POST("/1.1/favorites/create.json")
     void favoriteTweet(@Query("id") long id,
