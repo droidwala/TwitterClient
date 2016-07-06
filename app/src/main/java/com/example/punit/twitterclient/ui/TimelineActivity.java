@@ -119,6 +119,7 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
                     isRefreshing = false;
                 }
                 else{
+                    swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(TimelineActivity.this,getString(R.string.no_new_tweets_available),Toast.LENGTH_SHORT).show();
                 }
             }

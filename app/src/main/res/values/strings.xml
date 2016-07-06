@@ -18,4 +18,7 @@
     <!--Compose Tweet Activity -->
     <string name="compose_hint_text">What\'s up</string>
     <string name="compose_tweet_btn_text">Tweet</string>
+
+    <!--Upload Services -->
+    <string name="error_uploading_tweet">Error uploading tweet</string>
 </resources>

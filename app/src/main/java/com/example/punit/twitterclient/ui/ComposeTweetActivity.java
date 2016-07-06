@@ -1,19 +1,12 @@
 package com.example.punit.twitterclient.ui;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,15 +21,16 @@ import android.widget.Toast;
 import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.service.TweetUploadService;
+import com.example.punit.twitterclient.service.VideoUploadService;
 import com.example.punit.twitterclient.util.Constants;
 import com.example.punit.twitterclient.util.ImageUtility;
-import com.example.punit.twitterclient.util.Utility;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -56,9 +50,13 @@ public class ComposeTweetActivity extends AppCompatActivity {
     long tweet_id;
 
     MyTwitterApiClient apiClient;
-    String photo_path;
+    String path;
     boolean tweet_with_image = false;
+    boolean tweet_with_video = false;
 
+    boolean image_attached = false;
+    boolean video_attached = false;
+    private String filetype;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,13 +100,18 @@ public class ComposeTweetActivity extends AppCompatActivity {
     public void compose(View view) {
         if (b.getBoolean(Constants.OPEN_COMPOSE, false)) {
             if (tweet_with_image) {
-                composeTweetWithImage(photo_path);
-            } else {
+                composeTweetWithImage(path);
+            }
+            else if(tweet_with_video) {
+                long total_bytes = new File(path).length();
+                composeTweetWithVideo(path,total_bytes,filetype);
+            }
+            else{
                 composeTweet();
             }
         } else {
             if (tweet_with_image) {
-                replyToTweetWithImage(photo_path);
+                replyToTweetWithImage(path);
             } else {
                 replyToTweet(tweet_id);
             }
@@ -129,13 +132,37 @@ public class ComposeTweetActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constants.IMAGE_REQ_CODE) {
                 if (data != null) {
+                    String mimeType = getContentResolver().getType(data.getData());
+                    filetype = mimeType;
+                    if(mimeType!=null && mimeType.contains("image/")){
+                        image_attached = true;
+                        video_attached = false;
+                    }
+                    else if(mimeType!=null && mimeType.contains("video/mp4")){
+                        video_attached = true;
+                        image_attached = false;
+                    }
+                    else{
+                        Toast.makeText(ComposeTweetActivity.this,"This format is not supported",Toast.LENGTH_SHORT).show();
+                    }
                     try {
-                        photo_path = ImageUtility.getPath(this,data.getData());
-                        Log.d(TAG, "onActivityResult:Image path " + data.getData() + photo_path);
                         Bitmap bm;
-                        bm = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                        attached_image.setImageBitmap(bm);
-                        tweet_with_image = true;
+                        path = ImageUtility.getPath(this,data.getData());
+                        Log.d(TAG, "onActivityResult:Image path " + data.getData() + " " + path);
+                        if(image_attached) {
+                            Log.d(TAG, "onActivityResult: image path");
+                            bm = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                            attached_image.setImageBitmap(bm);
+                            tweet_with_image = true;
+                            tweet_with_video = false;
+                        }
+                        else if(video_attached){
+                            Log.d(TAG, "onActivityResult: video path");
+                            bm = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.MINI_KIND);
+                            attached_image.setImageBitmap(bm);
+                            tweet_with_video = true;
+                            tweet_with_image = false;
+                        }
                     }
                     catch (IOException e) {
                         e.printStackTrace();
@@ -197,6 +224,18 @@ public class ComposeTweetActivity extends AppCompatActivity {
         Intent intent = new Intent(ComposeTweetActivity.this, TweetUploadService.class);
         intent.putExtra("PATH", file_path);
         intent.putExtra("TWEET", reply_text.getText().toString());
+        startService(intent);
+        finish();
+    }
+
+    private void composeTweetWithVideo(String file_path,long total_bytes,String file_type){
+        tweet_button.setEnabled(false);
+        Toast.makeText(ComposeTweetActivity.this,"Posting Tweet!",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(ComposeTweetActivity.this, VideoUploadService.class);
+        intent.putExtra("PATH",file_path);
+        intent.putExtra("TWEET",reply_text.getText().toString());
+        intent.putExtra("SIZE",total_bytes);
+        intent.putExtra("TYPE",file_type);
         startService(intent);
         finish();
     }

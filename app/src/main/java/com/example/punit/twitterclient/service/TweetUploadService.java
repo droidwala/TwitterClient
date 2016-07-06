@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.ui.TimelineActivity;
 import com.example.punit.twitterclient.util.Constants;
+import com.example.punit.twitterclient.util.NotificationUtility;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -32,13 +33,12 @@ public class TweetUploadService extends IntentService {
         super(TAG);
     }
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        sendNotification();
         path = intent.getStringExtra("PATH");
         tweet = intent.getStringExtra("TWEET");
+        NotificationUtility.sendNotification(this,tweet,Constants.TWEET_NOTIF_ID);
         File file = new File(path);
         TypedFile typedFile = new TypedFile("application/octet-stream",file);
 
@@ -53,14 +53,14 @@ public class TweetUploadService extends IntentService {
                     public void success(Result<Tweet> result) {
                         if(result.response.getStatus() == 200){
                             Log.d(TAG, "success: tweeted" );
-                            successNotification();
+                            NotificationUtility.successNotification(TweetUploadService.this,tweet,Constants.TWEET_NOTIF_ID);
                         }
                     }
 
                     @Override
                     public void failure(TwitterException exception) {
                         Log.d(TAG, "failure: hag diya");
-                        failureNotification("Error posting tweet");
+                        NotificationUtility.failureNotification(TweetUploadService.this,"Error posting tweet",Constants.TWEET_NOTIF_ID);
                     }
                 });
             }
@@ -70,52 +70,11 @@ public class TweetUploadService extends IntentService {
 
                 Log.d(TAG, "failure: uploading " + path);
                 Log.d(TAG, "failure: uploading" + exception.getLocalizedMessage());
-                failureNotification("Error uploading image");
+                NotificationUtility.failureNotification(TweetUploadService.this,"Error uploading image",Constants.TWEET_NOTIF_ID);
             }
         });
     }
 
 
-    private void sendNotification() {
-        Log.d(TAG, "sendNotification: called");
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle("Sending Tweet")
-                .setContentText(tweet)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setProgress(0,0,true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
 
-        Intent resultIntent = new Intent(this, TimelineActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Constants.TWEET_NOTIF_ID,builder.build());
-
-    }
-
-    private void successNotification(){
-        Log.d(TAG, "successNotification: called");
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext())
-                .setContentTitle("Tweet Sent")
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText(tweet)
-                .setAutoCancel(true);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Constants.TWEET_NOTIF_ID,builder.build());
-    }
-
-    private void failureNotification(String reason){
-        Log.d(TAG, "failureNotification: called");
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle("Failure sending tweet")
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText(reason)
-                .setAutoCancel(true);
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Constants.TWEET_NOTIF_ID,builder.build());
-    }
 }
