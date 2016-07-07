@@ -3,6 +3,7 @@ package com.example.punit.twitterclient.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.adapter.TimelineAdapter;
+import com.example.punit.twitterclient.dagger.DaggerInjector;
 import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.util.ClickListener;
@@ -33,6 +38,8 @@ import com.twitter.sdk.android.core.models.MentionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,11 +73,15 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
 
     private static final String TAG = "TimelineActivity";
     private static final int REQ_CODE = 99;
+
+    @Inject SharedPreferences preferences;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
         ButterKnife.bind(this);
+        DaggerInjector.getAppComponent().inject(this);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         page_title = (TextView) toolbar.findViewById(R.id.page_title);
         setSupportActionBar(toolbar);
@@ -336,5 +347,29 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_logout:
+                editor = preferences.edit();
+                editor.clear();
+                editor.apply();
+                Intent intent = new Intent(TimelineActivity.this,MainActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
