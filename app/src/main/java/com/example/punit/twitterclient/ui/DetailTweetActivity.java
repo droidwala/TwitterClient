@@ -256,7 +256,12 @@ public class DetailTweetActivity extends AppCompatActivity{
             b.putStringArrayList(Constants.CMENTIONS,users);
         }
         b.putString(Constants.CTWITTER_NAME, twitter_name.getText().toString());
-        b.putLong(Constants.CTWEET_ID,tweet_id);
+        if(retweet_id > 0) {
+            b.putLong(Constants.CTWEET_ID, retweet_id);
+        }
+        else{
+            b.putLong(Constants.CTWEET_ID,tweet_id);
+        }
         reply_intent.putExtras(b);
         startActivity(reply_intent);
         overridePendingTransition(R.anim.modal_activity_open_enter,R.anim.modal_activity_close_exit);
