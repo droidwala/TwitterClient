@@ -243,9 +243,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-
-
-
     //ClickListener Initialization
     public void setClickListener(ClickListener listener){
         this.listener = listener;

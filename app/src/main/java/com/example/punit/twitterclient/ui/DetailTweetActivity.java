@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -15,9 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.punit.twitterclient.R;
+import com.example.punit.twitterclient.adapter.ReplyAdapter;
+import com.example.punit.twitterclient.adapter.TimelineAdapter;
+import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.util.CheckableImageView;
 import com.example.punit.twitterclient.util.Constants;
+import com.example.punit.twitterclient.util.DividerItemDecoration;
 import com.example.punit.twitterclient.util.Utility;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
@@ -25,8 +31,11 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Search;
+import com.twitter.sdk.android.core.models.Tweet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,8 +58,16 @@ public class DetailTweetActivity extends AppCompatActivity{
     @BindView(R.id.retweet_btn) CheckableImageView retweet;
     @BindView(R.id.like_btn) CheckableImageView like;
 
+    //Reply List
+    @BindView(R.id.reply_rv) RecyclerView reply_rv;
+    LinearLayoutManager linearLayoutManager;
+    ReplyAdapter adapter;
+
     MyTwitterApiClient apiClient;
     long tweet_id;
+    long retweet_id;
+
+    String original_username;
 
     int fav_count,retweet_count;
     boolean fav_status;
@@ -79,8 +96,10 @@ public class DetailTweetActivity extends AppCompatActivity{
 
         b = getIntent().getExtras();
 
-        tweet_id = Long.parseLong(b.getString(Constants.BTWEET_ID_STR));
+        tweet_id = b.getLong(Constants.BTWEET_ID_STR,0L);
+        retweet_id = b.getLong(Constants.BRT_ID_STR,0L);
         position = b.getInt(Constants.BPOSITION);
+        original_username = b.getString(Constants.BORIGINAL_USER_NAME,null);
 
         //setting up profile image
         Picasso.with(this)
@@ -112,9 +131,24 @@ public class DetailTweetActivity extends AppCompatActivity{
         }
 
         users = b.getStringArrayList(Constants.CMENTIONS);
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        reply_rv.setLayoutManager(linearLayoutManager);
+        reply_rv.addItemDecoration(new DividerItemDecoration(DetailTweetActivity.this,R.drawable.item_divider));
+
+
         //Setting up Client
         TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         apiClient = new MyTwitterApiClient(session);
+
+        if(retweet_id>0 && original_username!=null) {
+            showRepliesToTweet(retweet_id,"@" + original_username);
+        }
+        else{
+            showRepliesToTweet(tweet_id,twitter_name.getText().toString());
+        }
+
     }
 
 
@@ -208,6 +242,34 @@ public class DetailTweetActivity extends AppCompatActivity{
         reply_intent.putExtras(b);
         startActivity(reply_intent);
         overridePendingTransition(R.anim.modal_activity_open_enter,R.anim.modal_activity_close_exit);
+    }
+
+
+    private void showRepliesToTweet(final long t_id,String screen_name){
+        Log.d(TAG, "showRepliesToTweet: " + String.valueOf(t_id));
+        apiClient.getCustomService().searchTweets("to:" + screen_name,
+                t_id,
+                new Callback<Search>() {
+                    @Override
+                    public void success(Result<Search> result) {
+                        ArrayList<Tweet> tweets =  new ArrayList<>(result.data.tweets);
+                        Log.d(TAG, "success: " + String.valueOf(tweets.size()));
+                        for (Tweet tweet:tweets){
+                            if(tweet.inReplyToStatusId == t_id) {
+                                Log.d(TAG, "success: reply_to_id " + String.valueOf(tweet.inReplyToStatusId));
+                                Log.d(TAG, "success: tweet_txt: " + tweet.text);
+                                adapter = new ReplyAdapter(DetailTweetActivity.this,tweets);
+                                reply_rv.setAdapter(adapter);
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        Log.d(TAG, "failure: " + exception.getLocalizedMessage());
+                    }
+                });
     }
 
     @Override

@@ -221,7 +221,7 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         Intent intent = new Intent(TimelineActivity.this,DetailTweetActivity.class);
         Bundle b = new Bundle();
         b.putInt(Constants.BPOSITION,position);
-        b.putString(Constants.BTWEET_ID_STR,tweets.get(position).idStr);
+        b.putLong(Constants.BTWEET_ID_STR,tweets.get(position).id);
         b.putString(Constants.BPROFILE_IMG_URL,tweets.get(position).user.profileImageUrl);
         b.putString(Constants.BUSERNAME,tweets.get(position).user.name);
         b.putString(Constants.BTWITTERNAME,tweets.get(position).user.screenName);
@@ -238,6 +238,9 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
         if(tweets.get(position).retweetedStatus!=null) {
             b.putInt(Constants.BRETWEETS, tweets.get(position).retweetedStatus.retweetCount);
             b.putInt(Constants.BLIKES, tweets.get(position).retweetedStatus.favoriteCount);
+            b.putLong(Constants.BRT_ID_STR,tweets.get(position).retweetedStatus.id);
+            b.putString(Constants.BORIGINAL_USER_NAME,tweets.get(position).retweetedStatus.user.screenName);
+
         }
         else{
             b.putInt(Constants.BRETWEETS,tweets.get(position).retweetCount);

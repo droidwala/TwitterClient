@@ -87,6 +87,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/like_retweet_reply_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -117,5 +118,9 @@
             android:layout_weight="1"
             android:onClick="like"/>
     </LinearLayout>
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/reply_rv"
+        android:layout_below="@+id/like_retweet_reply_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

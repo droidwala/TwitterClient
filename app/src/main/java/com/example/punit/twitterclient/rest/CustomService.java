@@ -3,6 +3,7 @@ package com.example.punit.twitterclient.rest;
 import com.example.punit.twitterclient.R;
 import com.example.punit.twitterclient.model.Timeline;
 import com.twitter.sdk.android.core.models.Media;
+import com.twitter.sdk.android.core.models.Search;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.MediaService;
 
@@ -39,6 +40,10 @@ public interface CustomService {
     void showLatestTimeline(@Query("since_id") long id,
                             Callback<List<Timeline>> cb);
 
+    @GET("/1.1/search/tweets.json")
+    void searchTweets(@Query(encodeValue = true,value = "q") String screen_name,
+                      @Query("since_id") long id,
+                      Callback<Search> cb);
     //Favorites a tweet
     @POST("/1.1/favorites/create.json")
     void favoriteTweet(@Query("id") long id,

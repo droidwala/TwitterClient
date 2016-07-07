@@ -10,6 +10,8 @@ public class Constants {
 
     public static final String BPOSITION = "position";
     public static final String BTWEET_ID_STR="tweet_id";
+    public static final String BRT_ID_STR = "retweet_id";
+    public static final String BORIGINAL_USER_NAME ="original_user";
     public static final String BPROFILE_IMG_URL = "image_url";
     public static final String BUSERNAME = "username";
     public static final String BTWITTERNAME = "twitter_name";
