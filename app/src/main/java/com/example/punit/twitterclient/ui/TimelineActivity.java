@@ -218,15 +218,16 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
     @Override
     public void itemClicked(View view, int position) {
         Log.d(TAG, "itemClicked: " + String.valueOf(position));
+        Timeline tweet = adapter.getItem(position);
         Intent intent = new Intent(TimelineActivity.this,DetailTweetActivity.class);
         Bundle b = new Bundle();
         b.putInt(Constants.BPOSITION,position);
-        b.putLong(Constants.BTWEET_ID_STR,tweets.get(position).id);
-        b.putString(Constants.BPROFILE_IMG_URL,tweets.get(position).user.profileImageUrl);
-        b.putString(Constants.BUSERNAME,tweets.get(position).user.name);
-        b.putString(Constants.BTWITTERNAME,tweets.get(position).user.screenName);
-        b.putString(Constants.BTWEET,tweets.get(position).text);
-        List<MentionEntity> user_mentions = tweets.get(position).entities.userMentions;
+        b.putLong(Constants.BTWEET_ID_STR,tweet.id);
+        b.putString(Constants.BPROFILE_IMG_URL,tweet.user.profileImageUrl);
+        b.putString(Constants.BUSERNAME,tweet.user.name);
+        b.putString(Constants.BTWITTERNAME,tweet.user.screenName);
+        b.putString(Constants.BTWEET,tweet.text);
+        List<MentionEntity> user_mentions = tweet.entities.userMentions;
         if(user_mentions.size()>0){
             int length = user_mentions.size();
             ArrayList<String> user_names = new ArrayList<>();
@@ -236,18 +237,18 @@ public class TimelineActivity extends AppCompatActivity implements ClickListener
             b.putStringArrayList(Constants.CMENTIONS,user_names);
         }
         if(tweets.get(position).retweetedStatus!=null) {
-            b.putInt(Constants.BRETWEETS, tweets.get(position).retweetedStatus.retweetCount);
-            b.putInt(Constants.BLIKES, tweets.get(position).retweetedStatus.favoriteCount);
-            b.putLong(Constants.BRT_ID_STR,tweets.get(position).retweetedStatus.id);
-            b.putString(Constants.BORIGINAL_USER_NAME,tweets.get(position).retweetedStatus.user.screenName);
+            b.putInt(Constants.BRETWEETS, tweet.retweetedStatus.retweetCount);
+            b.putInt(Constants.BLIKES, tweet.retweetedStatus.favoriteCount);
+            b.putLong(Constants.BRT_ID_STR,tweet.retweetedStatus.id);
+            b.putString(Constants.BORIGINAL_USER_NAME,tweet.retweetedStatus.user.screenName);
 
         }
         else{
-            b.putInt(Constants.BRETWEETS,tweets.get(position).retweetCount);
-            b.putInt(Constants.BLIKES,tweets.get(position).favoriteCount);
+            b.putInt(Constants.BRETWEETS,tweet.retweetCount);
+            b.putInt(Constants.BLIKES,tweet.favoriteCount);
         }
-        b.putBoolean(Constants.BRETWEETED,tweets.get(position).retweeted);
-        b.putBoolean(Constants.BFAVORITED,tweets.get(position).favorited);
+        b.putBoolean(Constants.BRETWEETED,tweet.retweeted);
+        b.putBoolean(Constants.BFAVORITED,tweet.favorited);
         intent.putExtras(b);
         startActivityForResult(intent,REQ_CODE);
 
