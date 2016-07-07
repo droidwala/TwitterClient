@@ -14,6 +14,9 @@
     <string name="detail_tweet_twitter_name_at_annotation">\@%1$s</string>
     <string name="detail_tweet_retweets_count">%1$d RETWEETS</string>
     <string name="detail_tweet_favs_count">%1$d LIKES</string>
+    <string name="detail_tweet_retweet_btn_violation">You have retweeted/unretweeted \nsame tweet too many times</string>
+    <string name="detail_tweet_retweet_complete">RETWEETED</string>
+    <string name="detail_tweet_unretweet_complete">UN-RETWEETED</string>
 
     <!--Compose Tweet Activity -->
     <string name="compose_hint_text">What\'s up</string>

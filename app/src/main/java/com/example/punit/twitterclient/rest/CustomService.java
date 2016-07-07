@@ -59,6 +59,11 @@ public interface CustomService {
     void retweetTweet(@Path("id") long id,
                       Callback<Response> cb);
 
+    //Undo a Retweet
+    @POST("/1.1/statuses/unretweet/{id}.json")
+    void unretweetTweet(@Path("id") long id,
+                        Callback<Response> cb);
+
     //Compose tweet
     @POST("/1.1/statuses/update.json")
     void postTweet(@Query(encodeValue = true,value = "status") String tweet,

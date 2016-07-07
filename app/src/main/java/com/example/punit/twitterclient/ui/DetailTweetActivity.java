@@ -160,7 +160,7 @@ public class DetailTweetActivity extends AppCompatActivity{
                 @Override
                 public void success(Result<Response> result) {
                     if(result.response.getStatus() == 200){
-                        Toast.makeText(DetailTweetActivity.this,"RETWEETED",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailTweetActivity.this,getString(R.string.detail_tweet_retweet_complete),Toast.LENGTH_SHORT).show();
                         retweet_status = true;
                         retweet_count +=1;
                         retweets_count.setText(getString(R.string.detail_tweet_retweets_count,retweet_count));
@@ -176,7 +176,25 @@ public class DetailTweetActivity extends AppCompatActivity{
             });
         }
         else{
-            Toast.makeText(DetailTweetActivity.this,"You cannot undo retweet.This feature will be soon added!",Toast.LENGTH_SHORT).show();
+            retweet.setChecked(false);
+            apiClient.getCustomService().unretweetTweet(tweet_id, new Callback<Response>() {
+                @Override
+                public void success(Result<Response> result) {
+                    Toast.makeText(DetailTweetActivity.this,getString(R.string.detail_tweet_unretweet_complete),Toast.LENGTH_SHORT).show();
+                    retweet_status = false;
+                    retweet_count -=1;
+                    retweets_count.setText(getString(R.string.detail_tweet_retweets_count,retweet_count));
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    if(exception.getLocalizedMessage().contains("429")){
+                        Toast.makeText(DetailTweetActivity.this,getString(R.string.detail_tweet_retweet_btn_violation),Toast.LENGTH_SHORT).show();
+                    }
+                    retweet.setChecked(true);
+                    retweet_status = true;
+                }
+            });
         }
     }
 
