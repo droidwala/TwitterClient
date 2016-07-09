@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -28,10 +29,12 @@ import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.service.TweetUploadService;
 import com.example.punit.twitterclient.service.VideoUploadService;
+import com.example.punit.twitterclient.util.BitmapUtility;
 import com.example.punit.twitterclient.util.Constants;
 import com.example.punit.twitterclient.util.ImageUtility;
 import com.example.punit.twitterclient.util.MentionUtility;
 import com.example.punit.twitterclient.util.UsernameTokenizer;
+import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -61,16 +64,15 @@ public class ComposeTweetActivity extends AppCompatActivity {
 
     MyTwitterApiClient apiClient;
     String path;
-    boolean tweet_with_image = false;
-    boolean tweet_with_video = false;
-
     boolean image_attached = false;
     boolean video_attached = false;
+    boolean gif_attached = false;
     private String filetype;
 
     ArrayList<User> temp_users;
     ArrayList<String> users;
     ArrayAdapter<String> adapter;
+    Bitmap bm;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,10 +115,10 @@ public class ComposeTweetActivity extends AppCompatActivity {
     }
 
     public void compose(View view) {
-        if (tweet_with_image) {
+        if (image_attached) {
             composeTweetWithImage(path,tweet_id);
         }
-        else if(tweet_with_video) {
+        else if(video_attached || gif_attached) {
             long total_bytes = new File(path).length();
             composeTweetWithVideo(path,total_bytes,filetype,tweet_id);
         }
@@ -139,42 +141,42 @@ public class ComposeTweetActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constants.IMAGE_REQ_CODE) {
                 if (data != null) {
-                    String mimeType = getContentResolver().getType(data.getData());
-                    filetype = mimeType;
-                    if(mimeType!=null && mimeType.contains("image/")){
+                    path = ImageUtility.getPath(this,data.getData()).toLowerCase();
+                    Log.d(TAG, "PATH: " +  path);
+                    if(path!=null && ((path.contains(".jpg"))
+                            || (path.contains(".png"))
+                            || (path.contains(".webp")))){
                         image_attached = true;
                         video_attached = false;
+                        gif_attached = false;
+                        filetype = "image/" + path.substring(path.lastIndexOf(".") + 1,path.length());
                     }
-                    else if(mimeType!=null && mimeType.contains("video/mp4")){
+                    else if(path!=null && path.contains(".gif")){
+                        image_attached = false;
+                        video_attached = false;
+                        gif_attached = true;
+                        filetype = "image/" + path.substring(path.lastIndexOf(".") + 1,path.length());
+                    }
+                    else if(path!=null && path.contains(".mp4")){
                         video_attached = true;
                         image_attached = false;
+                        gif_attached = false;
+                        filetype = "video/" + path.substring(path.lastIndexOf(".") + 1,path.length());
                     }
                     else{
                         Toast.makeText(ComposeTweetActivity.this,"This format is not supported",Toast.LENGTH_SHORT).show();
                     }
-                    try {
-                        Bitmap bm;
-                        path = ImageUtility.getPath(this,data.getData());
-                        Log.d(TAG, "onActivityResult:Image path " + data.getData() + " " + path);
-                        if(image_attached) {
-                            Log.d(TAG, "onActivityResult: image path");
-                            bm = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                            attached_image.setImageBitmap(bm);
-                            tweet_with_image = true;
-                            tweet_with_video = false;
+
+                        if(image_attached || gif_attached) {
+                            Log.d(TAG, "Image/Gif attached");
+                            attached_image.setImageBitmap(BitmapUtility.decodeSampledBitmapFromResource(path,200,200));
                         }
                         else if(video_attached){
-                            Log.d(TAG, "onActivityResult: video path");
+                            Log.d(TAG, "Video attached");
                             bm = ThumbnailUtils.createVideoThumbnail(path, MediaStore.Video.Thumbnails.MINI_KIND);
                             attached_image.setImageBitmap(bm);
-                            tweet_with_video = true;
-                            tweet_with_image = false;
                         }
-                    }
-                    catch (IOException e) {
-                        e.printStackTrace();
-                        Log.d(TAG, "onActivityResult: " + e.getLocalizedMessage());
-                    }
+
                 }
             }
         }
