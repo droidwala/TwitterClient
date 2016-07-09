@@ -9,30 +9,40 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.punit.twitterclient.R;
+import com.example.punit.twitterclient.adapter.TimelineAdapter;
+import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.service.TweetUploadService;
 import com.example.punit.twitterclient.service.VideoUploadService;
 import com.example.punit.twitterclient.util.Constants;
 import com.example.punit.twitterclient.util.ImageUtility;
+import com.example.punit.twitterclient.util.MentionUtility;
+import com.example.punit.twitterclient.util.UsernameTokenizer;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.User;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +53,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
     private static final String TAG = "ComposeTweetActivity";
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.reply_to_user) TextView reply_to_user;
-    @BindView(R.id.reply_text) EditText reply_text;
+    @BindView(R.id.reply_text) MultiAutoCompleteTextView reply_text;
     @BindView(R.id.image_attachment) ImageView attached_image;
     @BindView(R.id.tweet_button) Button tweet_button;
     Bundle b;
@@ -58,6 +68,9 @@ public class ComposeTweetActivity extends AppCompatActivity {
     boolean video_attached = false;
     private String filetype;
 
+    ArrayList<User> temp_users;
+    ArrayList<String> users;
+    ArrayAdapter<String> adapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +108,8 @@ public class ComposeTweetActivity extends AppCompatActivity {
         //setting up client
         TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
         apiClient = new MyTwitterApiClient(session);
+
+        setUpMentionsListener();
     }
 
     public void compose(View view) {
@@ -229,6 +244,53 @@ public class ComposeTweetActivity extends AppCompatActivity {
     private void hideReplyToUserText() {
         reply_to_user.setVisibility(View.GONE);
         reply_text.setHint(getString(R.string.compose_hint_text));
+    }
+
+    private void setUpMentionsListener(){
+        temp_users = new ArrayList<>();
+        users = new ArrayList<>();
+        reply_text.setTokenizer(new UsernameTokenizer());
+        reply_text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                int cursor = start;
+                if (cursor >= s.length()) cursor = s.length()-1;
+                if (MentionUtility.isValidToken(s, cursor)){
+                    Log.d(TAG, "onTextChanged: called");
+                    String token = MentionUtility.getToken(s, start);
+                    apiClient.getCustomService().searchUsers(token, false, new Callback<List<User>>() {
+                        @Override
+                        public void success(Result<List<User>> result) {
+                            temp_users.clear();
+                            temp_users = new ArrayList<>(result.data);
+                            users.clear();
+                             for(User user:temp_users){
+                                 users.add(user.screenName);
+                             }
+                            adapter = new ArrayAdapter<>(ComposeTweetActivity.this,android.R.layout.simple_dropdown_item_1line,users);
+                            reply_text.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void failure(TwitterException exception) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
 

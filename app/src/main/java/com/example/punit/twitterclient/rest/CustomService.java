@@ -5,6 +5,7 @@ import com.example.punit.twitterclient.model.Timeline;
 import com.twitter.sdk.android.core.models.Media;
 import com.twitter.sdk.android.core.models.Search;
 import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.models.User;
 import com.twitter.sdk.android.core.services.MediaService;
 
 import java.util.List;
@@ -78,6 +79,11 @@ public interface CustomService {
                             @Query("media_ids") String media_id,
                             Callback<Response> cb);
 
+    //Search User
+    @GET("/1.1/users/search.json")
+    void searchUsers(@Query(encodeValue = true,value = "q") String search_txt,
+                     @Query("include_entities") boolean include_entities,
+                     Callback<List<User>> cb);
     @Multipart
     @POST("/1.1/media/upload.json")
     void uploadINIT(@Part("command") String command,
