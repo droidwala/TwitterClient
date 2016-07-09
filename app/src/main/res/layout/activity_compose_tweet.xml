@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/compose_tweet_edittext_margin"
                 android:layout_marginRight="@dimen/compose_tweet_edittext_margin"
-                android:backgroundTint="@android:color/transparent"
+                android:background="@android:color/transparent"
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:layout_margin="8dp"
