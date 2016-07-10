@@ -42,4 +42,6 @@ public class Constants {
     public static final int IMAGE_REQ_CODE = 999;
     public static final int TWEET_NOTIF_ID = 199;
     public static final int TWEET_VIDEO_NOTIF_ID = 299;
+
+    public static final int EXT_STORAGE_PERMISSION = 22;
 }

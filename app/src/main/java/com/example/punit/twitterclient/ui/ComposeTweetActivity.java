@@ -2,12 +2,17 @@ package com.example.punit.twitterclient.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -17,15 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.punit.twitterclient.R;
-import com.example.punit.twitterclient.adapter.TimelineAdapter;
-import com.example.punit.twitterclient.model.Timeline;
 import com.example.punit.twitterclient.rest.MyTwitterApiClient;
 import com.example.punit.twitterclient.service.TweetUploadService;
 import com.example.punit.twitterclient.service.VideoUploadService;
@@ -33,8 +36,8 @@ import com.example.punit.twitterclient.util.BitmapUtility;
 import com.example.punit.twitterclient.util.Constants;
 import com.example.punit.twitterclient.util.ImageUtility;
 import com.example.punit.twitterclient.util.MentionUtility;
+import com.example.punit.twitterclient.util.PermissionUtility;
 import com.example.punit.twitterclient.util.UsernameTokenizer;
-import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -43,7 +46,6 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,7 @@ public class ComposeTweetActivity extends AppCompatActivity {
     @BindView(R.id.reply_text) MultiAutoCompleteTextView reply_text;
     @BindView(R.id.image_attachment) ImageView attached_image;
     @BindView(R.id.tweet_button) Button tweet_button;
+    @BindView(R.id.parent_layout_compose) LinearLayout parent_layout;
     Bundle b;
     long tweet_id = 0L;
 
@@ -130,10 +133,16 @@ public class ComposeTweetActivity extends AppCompatActivity {
 
 
     public void attachImage(View view) {
-        Intent intent = new Intent();
-        intent.setType("image/* video/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select File"), Constants.IMAGE_REQ_CODE);
+        if(PermissionUtility.checkIfStoragePermissionIsGranted(this)){
+            Intent intent = new Intent();
+            intent.setType("image/* video/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select File"), Constants.IMAGE_REQ_CODE);
+        }
+        else{
+            PermissionUtility.requestStoragePermission(this);
+        }
+
     }
 
     @Override
@@ -295,5 +304,41 @@ public class ComposeTweetActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case Constants.EXT_STORAGE_PERMISSION:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Intent intent = new Intent();
+                    intent.setType("image/* video/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select File"), Constants.IMAGE_REQ_CODE);
+                }
+                else{
+                    Snackbar snackbar = Snackbar.make(parent_layout,
+                            "App needs storage permission for you to able to attach video/image in your tweets",
+                            Snackbar.LENGTH_LONG)
+                            .setAction("Settings", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                    Uri uri = Uri.fromParts("package",getPackageName(),null);
+                                    intent.setData(uri);
+                                    startActivity(intent);
+                                }
+                            })
+                            .setActionTextColor(ContextCompat.getColor(this,R.color.color_yellow));
 
+                    View snackbarview = snackbar.getView();
+                    snackbarview.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+
+                    snackbar.show();
+
+
+                }
+                return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }
